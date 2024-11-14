@@ -1,6 +1,17 @@
+"use client"
+
+import { useGetCompanyInfo } from "@/utils/react-query";
 import { Card, CardContent } from "../ui/card";
+import { useAccount } from "wagmi";
+// import { useFetchData } from "@/hooks/use-request";
 
 const CompanyInformation = () => {
+  const { address } = useAccount();
+  const { data } = useGetCompanyInfo(address!);
+  if (data && data.code === 200) {
+    console.log(data.data);
+  }
+
   return (
     <Card>
       <CardContent className="flex flex-wrap justify-between gap-6 pt-3">

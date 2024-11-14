@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "../ui/card";
+import { useAccount } from "wagmi";
+import { useGetAuctionDetail } from "@/utils/react-query";
 
 const formSchema = z.object({
   allowance: z.string({
@@ -38,7 +40,13 @@ const formSchema = z.object({
   })
 });
 
-const CardDetails = () => {
+const CardDetails = ({ tradeID }: { tradeID: string }) => {
+
+  const { address } = useAccount();
+  const { data } = useGetAuctionDetail(tradeID!);
+  if (data && data.code === 200) {
+    console.log(data.data);
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,7 +58,6 @@ const CardDetails = () => {
 
   const onSubmit = async () => {
     const getFormValues = form.getValues();
-
   }
 
   return (

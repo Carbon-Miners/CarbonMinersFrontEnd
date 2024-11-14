@@ -1,0 +1,1 @@
+export const carbonTraderAddress = "0x7187c7CA0F7087598A5a0b3289566F9f7f882ddb"

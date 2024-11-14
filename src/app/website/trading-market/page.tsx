@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import AuctionForm from "@/components/TradingMarket/AuctionForm";
 import ListCard from "@/components/TradingMarket/ListCard"
 import BidCard from "@/components/TradingMarket/BidCard"
+import { useGetAuctionList } from "@/utils/react-query";
 
 
 const listData = [
@@ -56,6 +57,10 @@ const BidData = [
 
 const TradingMarket = () => {
 
+  const { data: auctionList } = useGetAuctionList();
+  // if (data && data.code === 200) {
+  //   console.log(data.data);
+  // }
   const [showDialog, setShowDialog] = useState(false);
   const handleChange = (value: boolean) => {
     setShowDialog(value);
@@ -64,7 +69,7 @@ const TradingMarket = () => {
   return (
     <div className="w-full h-full relative">
       <Tabs defaultValue="market" className="w-full h-full flex flex-col">
-        <TabsList className="grid w-[240px] grid-cols-4">
+        <TabsList className="grid w-[280px] grid-cols-4">
           <TabsTrigger value="market">拍卖市场</TabsTrigger>
           <TabsTrigger value="bid">投标追踪</TabsTrigger>
           <TabsTrigger value="normal">常规市场</TabsTrigger>
@@ -73,7 +78,7 @@ const TradingMarket = () => {
         <TabsContent value="market" className="flex-[1]">
           <div className="flex flex-wrap gap-4">
             {
-              listData.map((item, index) => {
+              auctionList && auctionList.data.map((item, index) => {
                 return <ListCard key={index} cardInfo={item} />
               })
             }
@@ -104,7 +109,7 @@ const TradingMarket = () => {
             <DialogHeader>
               <DialogTitle>Start Auction</DialogTitle>
             </DialogHeader>
-            <AuctionForm />
+            <AuctionForm clsoseDialog={setShowDialog} />
           </DialogContent>
         </Dialog>
       </div>

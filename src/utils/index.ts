@@ -42,7 +42,7 @@ export function formatHash(hash?: string) {
 }
 
 
-export function calcTime(time: number, formatter: boolean = false) {
+export function calcTime(time: number | string, formatter: boolean = false) {
   const timeStamp = new Date(time);
   const year = timeStamp.getFullYear();
   const dayOfWeek = timeStamp.getDay();

@@ -1,10 +1,8 @@
 import CardDetails from "@/components/TradingMarket/CardDetails";
 
-const TradingDetail = () => {
+const TradingDetail = ({ params: { tradeID = '' } }) => {
   return (
-    <>
-      <CardDetails />
-    </>
+    <CardDetails tradeID={tradeID} />
   );
 };
 export default TradingDetail;

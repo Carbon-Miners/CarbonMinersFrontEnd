@@ -1,19 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ITradingCard } from "@/types";
+import { AuctionRsp } from "@/types";
 import { Card, CardContent } from "../ui/card";
 import { calcTime, formatAddress } from "@/utils";
 import { cn } from "@/lib/utils";
 
 interface IProps {
-  cardInfo: ITradingCard;
+  cardInfo: AuctionRsp;
 }
 const ListCard = ({ cardInfo }: IProps) => {
 
   const calcStatus = (startTime: string, endTime: string) => {
     const nowDate = new Date();
-    const start = new Date(Number(startTime));
-    const end = new Date(Number(endTime));
+    const start = new Date(startTime);
+    const end = new Date(endTime);
 
     const status = {
       trading: start <= nowDate && nowDate <= end,
@@ -30,7 +30,7 @@ const ListCard = ({ cardInfo }: IProps) => {
   }
 
   return (
-    <Link href={`/website/trading-market/${cardInfo.tradeID}`} className="cursor-pointer hover:scale-105">
+    <Link href={`/website/trading-market/trading-detail/${cardInfo.tradeID}`} className="cursor-pointer hover:scale-105">
       <Card>
         <CardContent className="grid gap-4 pt-2">
 
@@ -64,8 +64,8 @@ const ListCard = ({ cardInfo }: IProps) => {
               </div>
             </div>
             <div className="flex justify-between">
-              <span>{calcTime(Number(cardInfo.startTime))}</span>
-              <span>{calcTime(Number(cardInfo.endTime))}</span>
+              <span>{calcTime(cardInfo.startTime)}</span>
+              <span>{calcTime(cardInfo.endTime)}</span>
             </div>
             <div
               className="flex justify-start items-center"

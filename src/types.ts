@@ -42,3 +42,26 @@ export enum BidEnum {
   "AWAIT REFUND",
   "FINISHED"
 }
+
+export interface IQueryResponse<T> {
+  code: number;
+  data: T;
+  message: string;
+};
+
+// export interface IQueryAuctions<T> extends IQueryResponse {
+//   data: T[];
+// };
+
+export type AuctionRsp = {
+  id: number;
+  seller: string;
+  tradeID: string;
+  sellAmount: number;
+  minimumBidAmount: number;
+  initPriceUnit: number;
+  status: string;
+  startTime: string;
+  endTime: string;
+  transactionHash: string;
+};

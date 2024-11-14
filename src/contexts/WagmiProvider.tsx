@@ -6,7 +6,7 @@ import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { mainnet, anvil, sepolia } from 'wagmi/chains'
 import { http, createConfig } from 'wagmi'
-import { injected, walletConnect, metaMask } from 'wagmi/connectors'
+// import { injected, walletConnect, metaMask } from 'wagmi/connectors'
 // import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import '@rainbow-me/rainbowkit/styles.css'
 

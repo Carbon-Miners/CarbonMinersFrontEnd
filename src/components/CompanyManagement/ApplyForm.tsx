@@ -19,6 +19,9 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "../ui/card";
+import { Loader2 } from "lucide-react"
+import { useApplyEntry } from "@/utils/react-query";
+import { useAccount } from "wagmi";
 
 
 const formSchema = z.object({
@@ -63,23 +66,44 @@ const formSchema = z.object({
 
 const ApplyForm = () => {
 
+  const { address } = useAccount();
+  const { mutateAsync: companyApply } = useApplyEntry();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      companyName: "",
+      registrationNumber: "",
+      companyRepresentative: "",
+      companyAddress: "",
+      contactEmail: "",
+      contactNumber: "",
+      emissionData: "",
+      reductionStrategy: ""
+    }
   });
 
   const onSubmit = async () => {
+    setIsLoading(true);
     const getFormValues = form.getValues();
-    // setIsLoading(true);
-
+    const combineData = {
+      publicKey: address!,
+      name: getFormValues.companyName,
+      companyMsg: JSON.stringify(getFormValues),
+    }
+    const applyStatus = await companyApply(combineData);
+    if (applyStatus) {
+      setIsLoading(false);
+      toast({
+        description: "Apply Success!"
+      })
+    }
   }
 
   return (
     <div className="w-full h-[100%] flex justify-center items-center">
-      {/* {isLoading && <Loader />} */}
-
       <Card>
         <CardContent>
           <Form {...form}>
@@ -197,7 +221,12 @@ const ApplyForm = () => {
                 )}
               />
               {/* <div className="w-full flex justify-end gap-2"> */}
-              <Button type="submit" className="absolute bottom-0 w-full bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]">Apply For Entry</Button>
+              <Button type="submit" className="absolute bottom-0 w-full bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]">
+                {
+                  isLoading && <Loader2 className="animate-spin" />
+                }
+                Apply For Entry
+              </Button>
               {/* </div> */}
 
             </form>

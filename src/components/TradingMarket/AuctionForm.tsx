@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,8 +21,20 @@ import {
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils";
+import { type BaseError, useAccount, useWriteContract } from "wagmi";
+import { waitForTransactionReceipt } from "@wagmi/core";
+import { useToast } from "@/hooks/use-toast";
+import { wagmiConfig } from "@/utils/wagmi-config";
+import { carbonAuctionTradeAbi } from "~/carbon";
+import { carbonTraderAddress } from "@/config";
+import { useStartAuction } from "@/utils/react-query";
+
+interface IProps {
+  clsoseDialog: (value: boolean) => void;
+}
 
 const formSchema = z.object({
+  tradeID: z.string(),
   sellAmount: z.string({
     required_error: "sellAmount is required",
   }),
@@ -45,15 +56,73 @@ const formSchema = z.object({
   })
 });
 
-const AuctionForm = () => {
+const AuctionForm = ({ clsoseDialog }: IProps) => {
+
+  const { address } = useAccount();
+  const { toast } = useToast();
+  const { mutateAsync: startAuctio } = useStartAuction();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { writeContract } = useWriteContract({
+    mutation: {
+      onSuccess: async (hash, variables) => {
+        const listReceipt = await waitForTransactionReceipt(wagmiConfig,
+          { hash });
+        if (listReceipt.status === "success") {
+          startAuctionMethod(hash);
+        }
+      },
+      onError: (error) => {
+        toast({
+          description: "Error: " + ((error as BaseError).shortMessage || error.message)
+        });
+      }
+    }
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      tradeID: new Date().getTime().toString()
+    }
   });
+
+  const startAuctionMethod = async (hash: string) => {
+    const getFormValues = form.getValues();
+    const combineData = {
+      publicKey: address!,
+      hash: hash,
+      ...getFormValues
+    }
+    const auctionRes = await startAuctio(combineData);
+    if (auctionRes) {
+      setIsLoading(false);
+      clsoseDialog(false);
+      toast({
+        description: "Your auction has been posted!",
+      });
+    }
+
+
+
+  }
 
   const onSubmit = async () => {
     const getFormValues = form.getValues();
-
+    setIsLoading(true);
+    writeContract({
+      abi: carbonAuctionTradeAbi,
+      address: carbonTraderAddress,
+      functionName: 'startAuctionTrade',
+      args: [
+        BigInt(getFormValues.tradeID),
+        BigInt(getFormValues.sellAmount),
+        BigInt(new Date(getFormValues.startTime).getTime()),
+        BigInt(new Date(getFormValues.endTime).getTime()),
+        BigInt(getFormValues.minimumBidAmount),
+        BigInt(getFormValues.initPriceUnit),
+      ],
+    })
   }
 
   return (
