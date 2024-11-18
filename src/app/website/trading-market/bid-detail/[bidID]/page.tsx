@@ -28,6 +28,7 @@ import { carbonTraderAddress, erc20Address } from "@/config";
 import { Loader2 } from "lucide-react";
 import { erc20Abi } from "~/erc20";
 import { parseEther } from "viem";
+import { readContract } from '@wagmi/core'
 
 const formSchema = z.object({
   bidPassword: z.string({
@@ -39,6 +40,7 @@ const BidDetails = ({ params: { bidID = '' } }) => {
   const [bidId, acutionId] = bidID.split('-');
   const { toast } = useToast();
   const { mutateAsync: bidUpdate } = useBidUpdate();
+  const { mutateAsync: updateBid } = useBidUpdate();
   const [bidDetail, setBidDetail] = useState<IBidCard>({} as IBidCard);
   const [auctionDetail, setAuctionDetail] = useState<AuctionRsp>({} as AuctionRsp);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -87,9 +89,8 @@ const BidDetails = ({ params: { bidID = '' } }) => {
         const listReceipt = await waitForTransactionReceipt(wagmiConfig,
           { hash });
         if (listReceipt.status === "success") {
-          toast({
-            description: "finalize successfully!",
-          });
+
+          updateBidInfo(hash);
         }
       },
       onError: (error) => {
@@ -141,7 +142,7 @@ const BidDetails = ({ params: { bidID = '' } }) => {
     }
   }
 
-  const approveToken = () => {
+  const approveToken = async () => {
     approve({
       abi: erc20Abi,
       address: erc20Address,
@@ -151,13 +152,25 @@ const BidDetails = ({ params: { bidID = '' } }) => {
   }
 
   const finalizeAuction = () => {
-    console.log(BigInt(bidDetail.auctionID), BigInt(bidDetail.allocateAmount), parseEther(String(bidDetail.additionalAmountToPay)));
     finalize({
       abi: carbonTraderAbi,
       address: carbonTraderAddress,
       functionName: 'finalizeAuctionAndTransferCarbon',
       args: [BigInt(bidDetail.auctionID), BigInt(bidDetail.allocateAmount), parseEther(String(bidDetail.additionalAmountToPay))]
     })
+  }
+
+  const updateBidInfo = async (hash: string) => {
+    const res = await updateBid({
+      biddingID: bidId,
+      hash: hash,
+      status: '5'
+    });
+    if (res) {
+      toast({
+        description: "finalize successfully!",
+      });
+    }
   }
 
   const judgeComponent = (status: string) => {
