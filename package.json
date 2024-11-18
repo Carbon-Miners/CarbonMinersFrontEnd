@@ -15,6 +15,7 @@
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-popover": "^1.1.2",
     "@radix-ui/react-radio-group": "^1.2.1",
+    "@radix-ui/react-scroll-area": "^1.2.1",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
@@ -28,6 +29,7 @@
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "ethers": "^6.11.1",
     "framer-motion": "^11.11.9",
@@ -43,9 +45,11 @@
     "tailwindcss-animate": "^1.0.7",
     "viem": "2.x",
     "wagmi": "^2.12.19",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^20",
     "@types/qs": "^6.9.17",
     "@types/react": "^18",

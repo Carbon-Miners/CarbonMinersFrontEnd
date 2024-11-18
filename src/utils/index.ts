@@ -1,3 +1,5 @@
+import CryptoJs from "crypto-js";
+
 export const SlideUp = (delay: number) => {
   return {
     initial: {
@@ -83,4 +85,37 @@ export function calcTime(time: number | string, formatter: boolean = false) {
   //     time
   //   };
   // }
+}
+
+const normalizePassword = (password: string): string => {
+  const encoder = new TextEncoder();
+  const passwordArray = encoder.encode(password);
+  let key = new Uint8Array(16); // 创建一个固定16字节的数组
+
+  // 复制密码到key数组，如果密码长度小于16，剩余部分用0填充
+  for (let i = 0; i < passwordArray.length; i++) {
+    key[i] = passwordArray[i];
+  }
+
+  // 如果密码数组长度小于16，填充剩余部分
+  if (passwordArray.length < 16) {
+    const filler = new Uint8Array(16 - passwordArray.length).fill(0);
+    key.set(filler, passwordArray.length);
+  }
+
+  // 将Uint8Array转换为字符串
+  return String.fromCharCode.apply(null, key as any);
+}
+
+export const encrypt = (word: string, password: string) => {
+  const key = CryptoJs.enc.Utf8.parse(normalizePassword(password));
+  const srcs = CryptoJs.enc.Utf8.parse(word);
+  const encrypted = CryptoJs.AES.encrypt(srcs, key, { mode: CryptoJs.mode.ECB, padding: CryptoJs.pad.Pkcs7 });
+  return encrypted.toString();
+};
+
+export const decrypt = (word: string, password: string) => {
+  const key = CryptoJs.enc.Utf8.parse(normalizePassword(password));
+  const decrypt = CryptoJs.AES.decrypt(word, key, { mode: CryptoJs.mode.ECB, padding: CryptoJs.pad.Pkcs7 });
+  return CryptoJs.enc.Utf8.stringify(decrypt).toString();
 }

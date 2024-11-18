@@ -28,7 +28,6 @@ const DialogBtn = () => {
 
   const handleConnect = async (connector: Connector) => {
     connect({ connector });
-
   }
 
   const handleOpenChange = (value: boolean) => {

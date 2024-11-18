@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 import { useBidSubmit, useGetAuctionDetail } from "@/utils/react-query/userApi";
 import { type BaseError, useReadContracts, useWriteContract } from "wagmi";
@@ -28,7 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { calcTime, encrypt } from "@/utils";
 import useStore from "@/store";
 import { AuctionRsp } from "@/types";
-import { formatEther } from 'viem';
+import { formatEther, parseEther } from 'viem';
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
@@ -53,7 +53,7 @@ const formSchema = z.object({
   })
 });
 
-const CardDetails = ({ tradeID }: { tradeID: string }) => {
+const TradingDetail = ({ params: { tradeID = '' } }) => {
 
   const { toast } = useToast();
   // const [isLoading, setIsLoading] = useState(false);
@@ -79,7 +79,7 @@ const CardDetails = ({ tradeID }: { tradeID: string }) => {
   });
 
 
-  const { writeContract: approve, isSuccess } = useWriteContract({
+  const { writeContract: approve, isSuccess: approveSuccess } = useWriteContract({
     mutation: {
       onSuccess: async (hash, variables) => {
         const listReceipt = await waitForTransactionReceipt(wagmiConfig,
@@ -97,15 +97,15 @@ const CardDetails = ({ tradeID }: { tradeID: string }) => {
       }
     }
   });
-  const { writeContract: deposit } = useWriteContract({
+  const { writeContract: deposit, isSuccess: depositSuccess } = useWriteContract({
     mutation: {
       onSuccess: async (hash, variables) => {
         const listReceipt = await waitForTransactionReceipt(wagmiConfig,
           { hash });
         if (listReceipt.status === "success") {
-          toast({
-            description: "Deposited successfully!",
-          });
+          // toast({
+          //   description: "Deposited successfully!",
+          // });
           submitBid(hash);
         }
       },
@@ -142,13 +142,12 @@ const CardDetails = ({ tradeID }: { tradeID: string }) => {
   });
   // approve method
   const approveToken = () => {
-    console.log("wwweee");
-    // approve({
-    //   abi: erc20Abi,
-    //   address: erc20Address,
-    //   functionName: 'approve',
-    //   args: [carbonTraderAddress, BigInt(form.getValues().allowance)]
-    // })
+    approve({
+      abi: erc20Abi,
+      address: erc20Address,
+      functionName: 'approve',
+      args: [carbonTraderAddress, parseEther(form.getValues().pricePerUint)]
+    })
   }
   // deposit method
   const depositToken = async () => {
@@ -163,7 +162,7 @@ const CardDetails = ({ tradeID }: { tradeID: string }) => {
       abi: carbonTraderAbi,
       address: carbonTraderAddress,
       functionName: 'deposit',
-      args: [BigInt(tradeID), BigInt(form.getValues().pricePerUint), encryptInfo]
+      args: [BigInt(tradeID), parseEther(form.getValues().pricePerUint), encryptInfo]
     })
   }
 
@@ -184,7 +183,7 @@ const CardDetails = ({ tradeID }: { tradeID: string }) => {
     });
     if (result) {
       toast({
-        description: "Bid success!",
+        description: "Deposited and Bid successfully!",
       });
     }
   }
@@ -297,23 +296,31 @@ const CardDetails = ({ tradeID }: { tradeID: string }) => {
                     <FormItem>
                       <FormLabel>Auction Password</FormLabel>
                       <FormControl>
-                        <Input placeholder="Set An Auction Password" {...field} />
+                        <Input type="password" placeholder="Set An Auction Password" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <div className="w-full flex gap-2">
+                {/* <div className="w-full flex gap-2">
                   <Button className="w-1/2 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]" onClick={approveToken}>
                     Approve
                   </Button>
                   <Button className="w-1/2 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]" onClick={depositToken}>
                     Deposit
                   </Button>
-                </div>
+                </div> */}
 
               </form>
             </Form>
+          </div>
+          <div className="w-full flex gap-2 mt-2">
+            <Button className="w-1/2 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]" onClick={approveToken}>
+              Approve
+            </Button>
+            <Button className="w-1/2 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]" onClick={depositToken}>
+              Deposit
+            </Button>
           </div>
 
         </CardContent>
@@ -322,4 +329,4 @@ const CardDetails = ({ tradeID }: { tradeID: string }) => {
     </div>
   );
 };
-export default CardDetails;
+export default TradingDetail;

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,8 +19,9 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "../ui/card";
 import { Loader2 } from "lucide-react"
-import { useApplyEntry } from "@/utils/react-query";
-import { useAccount } from "wagmi";
+import { useApplyEntry } from "@/utils/react-query/userApi";
+import useStore from "@/store";
+import { CompanyEnum } from "@/types";
 
 
 const formSchema = z.object({
@@ -64,9 +64,9 @@ const formSchema = z.object({
 });
 
 
-const ApplyForm = () => {
+const ApplyForm = ({ setTabValue }: { setTabValue: (value: CompanyEnum) => void }) => {
 
-  const { address } = useAccount();
+  const { addressConnect } = useStore();
   const { mutateAsync: companyApply } = useApplyEntry();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -89,7 +89,7 @@ const ApplyForm = () => {
     setIsLoading(true);
     const getFormValues = form.getValues();
     const combineData = {
-      publicKey: address!,
+      publicKey: addressConnect!,
       name: getFormValues.companyName,
       companyMsg: JSON.stringify(getFormValues),
     }
@@ -99,6 +99,7 @@ const ApplyForm = () => {
       toast({
         description: "Apply Success!"
       })
+      setTabValue(CompanyEnum.INFOS);
     }
   }
 
@@ -223,7 +224,7 @@ const ApplyForm = () => {
               {/* <div className="w-full flex justify-end gap-2"> */}
               <Button type="submit" className="absolute bottom-0 w-full bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]">
                 {
-                  isLoading && <Loader2 className="animate-spin" />
+                  isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 }
                 Apply For Entry
               </Button>

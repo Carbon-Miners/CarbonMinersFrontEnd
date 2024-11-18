@@ -11,35 +11,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import AuctionForm from "@/components/TradingMarket/AuctionForm";
 import ListCard from "@/components/TradingMarket/ListCard"
 import BidCard from "@/components/TradingMarket/BidCard"
-import { useGetAuctionList } from "@/utils/react-query";
+import { useGetAuctionList, getAuctionList, useGetBidList } from "@/utils/react-query/userApi";
+import useStore from "@/store";
 
 
-const listData = [
-  {
-    id: "1",
-    seller: "0x5d685c71B40Ad741dbA424229FD641816E9A6395",
-    tradeID: "tradeID",
-    sellAmount: "5",
-    minimumBidAmount: "1",
-    initPriceUnit: "2",
-    status: "dd",
-    startTime: "1729555200000",
-    endTime: "1729728000000",
-    transactionHash: "0xdfefefeffef"
-  },
-  {
-    id: "2",
-    seller: "0x5d685c71B40Ad741dbA424229FD641816E9A6395",
-    tradeID: "tradeI",
-    sellAmount: "5",
-    minimumBidAmount: "1",
-    initPriceUnit: "3",
-    status: "dd2",
-    startTime: "1729729000000",
-    endTime: "1761264000000",
-    transactionHash: "0xdfef2feffef"
-  }
-]
+
 const BidData = [
   {
     id: "bid01",
@@ -56,24 +32,28 @@ const BidData = [
 ]
 
 const TradingMarket = () => {
-
+  const { addressConnect } = useStore();
   const { data: auctionList } = useGetAuctionList();
-  // if (data && data.code === 200) {
-  //   console.log(data.data);
-  // }
+  const { data: bidList } = useGetBidList(addressConnect);
+
   const [showDialog, setShowDialog] = useState(false);
   const handleChange = (value: boolean) => {
     setShowDialog(value);
   }
+  // const refreshList = async () => {
+  //   const data = await queryClient.fetchQuery([QUERY_KEYS.GET_AUCTION_LIST], 
+  //     () => getAuctionList(QUERY_PATHS.AUCTION_LIST_PATH)
+  //   );
+  // }
 
   return (
     <div className="w-full h-full relative">
       <Tabs defaultValue="market" className="w-full h-full flex flex-col">
-        <TabsList className="grid w-[280px] grid-cols-4">
+        <TabsList className="grid w-[270px] grid-cols-3">
           <TabsTrigger value="market">拍卖市场</TabsTrigger>
           <TabsTrigger value="bid">投标追踪</TabsTrigger>
           <TabsTrigger value="normal">常规市场</TabsTrigger>
-          <TabsTrigger value="mine">我的</TabsTrigger>
+          {/* <TabsTrigger value="mine">我的</TabsTrigger> */}
         </TabsList>
         <TabsContent value="market" className="flex-[1]">
           <div className="flex flex-wrap gap-4">
@@ -87,7 +67,7 @@ const TradingMarket = () => {
         <TabsContent value="bid" className="flex-[1]">
           <div className="flex flex-wrap gap-4">
             {
-              BidData.map((item, index) => {
+              bidList && bidList.data.map((item, index) => {
                 return <BidCard key={index} bidInfo={item} />
               })
             }
@@ -96,9 +76,9 @@ const TradingMarket = () => {
         <TabsContent value="nromal" className="flex-[1]">
           我的
         </TabsContent>
-        <TabsContent value="mine" className="flex-[1]">
+        {/* <TabsContent value="mine" className="flex-[1]">
           我的
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
       <div className="absolute right-5 top-1">
         <Dialog open={showDialog} onOpenChange={handleChange}>

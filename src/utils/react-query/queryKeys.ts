@@ -1,24 +1,16 @@
 export enum QUERY_KEYS {
 
+  // COMPANY KEYS
   GET_COMPANY_INFO = "getCompanyInfo",
-  // // AUTH KEYS
-  // CREATE_USER_ACCOUNT = "createUserAccount",
+  GET_COMPANY_LIST = "getCompanyList",
 
-  // // USER KEYS
-  // GET_CURRENT_USER = "getCurrentUser",
-  // GET_USERS = "getUsers",
-  // GET_USER_BY_ID = "getUserById",
+  // AUCTION/BID KEYS
+  GET_AUCTION_LIST = "getAuctionList",
+  GET_BID_LIST = "getBidList",
+  GET_BID_DETAILS = "getBidDetails",
 
-  // // POST KEYS
-  // GET_POSTS = "getPosts",
-  // GET_INFINITE_POSTS = "getInfinitePosts",
-  // GET_RECENT_POSTS = "getRecentPosts",
-  // GET_POST_BY_ID = "getPostById",
-  // GET_USER_POSTS = "getUserPosts",
-  // GET_FILE_PREVIEW = "getFilePreview",
-
-  // //  SEARCH KEYS
-  // SEARCH_POSTS = "getSearchPosts",
+  // REPORT KEYS
+  GET_REPORT_INFO = "getReportInfo",
 }
 
 export enum QUERY_PATHS {
@@ -26,13 +18,26 @@ export enum QUERY_PATHS {
   COMPANY_INFO_PATH = "/api/user",
   COMPANY_APPLY_PATH = "/api/user/apply-entry",
 
+  // 企业管理-manager
+  COMPANY_LIST_PATH = "/api/user/list",
+  COMPANY_CHECK_PATH = "/api/user/review-entry",
+
   //拍卖
-  START_AUCTION_PATH = "/api/auction/start-auction",
+  AUCTION_START_PATH = "/api/auction/start-auction",
   AUCTION_LIST_PATH = "/api/auction/list",
   AUCTION_DETAIL_PATH = "/api/auction",
 
   //竞拍
+  BID_SUBMIT_PATH = "/api/bidding/submit-bidding",
+  BID_LIST_PATH = "/api/bidding/key",
+  BID_DETAILS_PATH = "/api/bidding/id",
+  BID_UPDATE_PATH = "/api/bidding/update-bidding",
 
-
+  //报告
   SUBMIT_REPORT_PATH = "/api/report/submit-report",
+  REPORT_INFO_PATH = "/api/report",
+
+  //惩罚
+  PUNISH_INFO_PATH = "/api/penalty",
+  PUNISH_USER_PATH = "/api/report/review-report",
 }

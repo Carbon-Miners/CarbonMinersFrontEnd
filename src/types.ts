@@ -8,6 +8,27 @@ export interface IMenu {
   menuList: IMenuItem[]
 }
 
+export interface ICompanyInfo {
+  companyName: string,
+  registrationNumber: string,
+  companyRepresentative: string,
+  companyAddress: string,
+  contactEmail: string,
+  contactNumber: string,
+  emissionData: string,
+  reductionStrategy: string,
+  status: string
+}
+
+export interface ICompanyReport {
+  id: number,
+  publicKey: string,
+  reportID: string,
+  report: string,
+  reportStatus: string,
+  reportTime: string
+}
+
 export interface ITradingCard {
   id: string;
   seller: string;
@@ -65,3 +86,41 @@ export type AuctionRsp = {
   endTime: string;
   transactionHash: string;
 };
+
+
+// export type BidRsp = {
+//   id: string;
+//   buyer: string;
+//   auctionID: string;
+//   biddingID: string;
+//   biddingMsg: string;
+//   biddingStatus: string;
+//   allocateAmount: number;
+//   additionalAmountToPay: number;
+//   biddingTime: string;
+//   hash: string;
+// };
+export enum CompanyEnum {
+  "SETTLED" = "settled",
+  "INFOS" = "infos",
+  "APPLY" = "apply",
+  "UPLOAD" = "upload",
+  "CHECK" = "check",
+}
+
+export interface ICompanyCard {
+  id: string,
+  publicKey: string,
+  reportID: string,
+  penaltyID: string,
+  status: string,
+  companyMsg: string,
+  extra_msg: string,
+  createTime: string
+}
+
+export enum StatusEnum {
+  "UNHANDLE" = "0",
+  "PASSED" = "1",
+  "REJECTED" = "2"
+}

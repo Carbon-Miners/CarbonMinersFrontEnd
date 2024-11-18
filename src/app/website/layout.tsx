@@ -1,9 +1,12 @@
 "use client"
 
 import AsideComponent from "@/components/SiteAside/SiteAside";
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import { formatAddress } from "@/utils";
 import { useEffect, useState } from "react";
+import useStore from "@/store/index";
+import { useRouter } from "next/navigation";
+
 const menuList = [
   {
     title: "企业管理",
@@ -25,11 +28,19 @@ const menuList = [
 
 const websiteLayout = ({ children }: { children: React.ReactNode }) => {
 
+  const router = useRouter();
   const { address } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { setAddr } = useStore();
   const [clientAddress, setClientAddress] = useState<`0x${string}` | undefined>(undefined);
+  const exitSystem = () => {
+    disconnect();
+    router.push('/');
+  }
 
   useEffect(() => {
     setClientAddress(address);
+    setAddr(address!);
   }, [address]);
 
   return (
@@ -39,7 +50,7 @@ const websiteLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
       <div className="flex-[4] p-4 flex flex-col overflow-y-hidden">
         <div className="w-full flex justify-end">
-          <div className='min-w-[149px] h-[40px] px-4 rounded-[16px] bg-[--button-bg] text-[--basic-text] flex justify-center items-center font-bold cursor-pointer'>
+          <div className='min-w-[149px] h-[40px] px-4 rounded-[16px] bg-[--button-bg] text-[--basic-text] flex justify-center items-center font-bold cursor-pointer' onClick={exitSystem}>
             {clientAddress ? formatAddress(clientAddress) : "Loading..."}
           </div>
         </div>

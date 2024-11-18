@@ -23,7 +23,7 @@ const BidCard = ({ bidInfo }: IProps) => {
   }
 
   return (
-    <Link href={`/website/trading-market/bid-detail`} className="cursor-pointer hover:scale-105">
+    <Link href={`/website/trading-market/bid-detail/${bidInfo.biddingID}-${bidInfo.auctionID}`} className="cursor-pointer hover:scale-105">
       <Card>
         <CardContent className="grid gap-4 pt-2">
 
@@ -43,7 +43,7 @@ const BidCard = ({ bidInfo }: IProps) => {
               <span className="flex h-2 w-2 rounded-full bg-sky-500 mr-3" />
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">
-                  bid time: {calcTime(Number(bidInfo.biddingTime), true)}
+                  bid time: {calcTime(bidInfo.biddingTime, true)}
                 </p>
               </div>
             </div>

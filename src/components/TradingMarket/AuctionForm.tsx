@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, Loader2 } from "lucide-react"
 import {
   Popover,
   PopoverContent,
@@ -21,13 +21,16 @@ import {
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils";
-import { type BaseError, useAccount, useWriteContract } from "wagmi";
+import { type BaseError, useWriteContract } from "wagmi";
 import { waitForTransactionReceipt } from "@wagmi/core";
 import { useToast } from "@/hooks/use-toast";
 import { wagmiConfig } from "@/utils/wagmi-config";
-import { carbonAuctionTradeAbi } from "~/carbon";
+import { carbonTraderAbi } from "~/carbonTrader";
 import { carbonTraderAddress } from "@/config";
-import { useStartAuction } from "@/utils/react-query";
+import { useStartAuction } from "@/utils/react-query/userApi";
+import useStore from "@/store";
+import { calcTime } from "@/utils";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 interface IProps {
   clsoseDialog: (value: boolean) => void;
@@ -58,9 +61,9 @@ const formSchema = z.object({
 
 const AuctionForm = ({ clsoseDialog }: IProps) => {
 
-  const { address } = useAccount();
+  const { addressConnect } = useStore();
   const { toast } = useToast();
-  const { mutateAsync: startAuctio } = useStartAuction();
+  const { mutateAsync: startAuction } = useStartAuction();
   const [isLoading, setIsLoading] = useState(false);
 
   const { writeContract } = useWriteContract({
@@ -90,11 +93,13 @@ const AuctionForm = ({ clsoseDialog }: IProps) => {
   const startAuctionMethod = async (hash: string) => {
     const getFormValues = form.getValues();
     const combineData = {
-      publicKey: address!,
+      ...getFormValues,
+      publicKey: addressConnect!,
       hash: hash,
-      ...getFormValues
+      startTime: calcTime(new Date(getFormValues.startTime).getTime(), true),
+      endTime: calcTime(new Date(getFormValues.endTime).getTime(), true),
     }
-    const auctionRes = await startAuctio(combineData);
+    const auctionRes = await startAuction(combineData);
     if (auctionRes) {
       setIsLoading(false);
       clsoseDialog(false);
@@ -102,27 +107,38 @@ const AuctionForm = ({ clsoseDialog }: IProps) => {
         description: "Your auction has been posted!",
       });
     }
-
-
-
   }
 
-  const onSubmit = async () => {
-    const getFormValues = form.getValues();
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     writeContract({
-      abi: carbonAuctionTradeAbi,
+      abi: carbonTraderAbi,
       address: carbonTraderAddress,
       functionName: 'startAuctionTrade',
       args: [
-        BigInt(getFormValues.tradeID),
-        BigInt(getFormValues.sellAmount),
-        BigInt(new Date(getFormValues.startTime).getTime()),
-        BigInt(new Date(getFormValues.endTime).getTime()),
-        BigInt(getFormValues.minimumBidAmount),
-        BigInt(getFormValues.initPriceUnit),
+        BigInt(data.tradeID),
+        BigInt(data.sellAmount),
+        BigInt(new Date(data.startTime).getTime()),
+        BigInt(new Date(data.endTime).getTime()),
+        BigInt(data.minimumBidAmount),
+        BigInt(data.initPriceUnit),
       ],
     })
+  }
+
+  const handleTimeChange = (type: "hour" | "minute", value: string, field: "start" | "end") => {
+    const flag = field === "start" ? "startTime" : "endTime";
+    const currentDate = form.getValues(flag) || new Date();
+    let newDate = new Date(currentDate);
+
+    if (type === "hour") {
+      const hour = parseInt(value, 10);
+      newDate.setHours(hour);
+    } else if (type === "minute") {
+      newDate.setMinutes(parseInt(value, 10));
+    }
+
+    form.setValue(flag, newDate);
   }
 
   return (
@@ -184,7 +200,7 @@ const AuctionForm = ({ clsoseDialog }: IProps) => {
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, "MM/dd/yyyy HH:mm")
                       ) : (
                         <span>Select Start Time</span>
                       )}
@@ -192,16 +208,74 @@ const AuctionForm = ({ clsoseDialog }: IProps) => {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date <= new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
+                <PopoverContent className="w-auto p-0">
+                  <div className="flex">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      fromDate={new Date()}
+                      initialFocus
+                    />
+                    <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                      <ScrollArea className="w-64 sm:w-auto">
+                        <div className="flex sm:flex-col p-2">
+                          {Array.from({ length: 24 }, (_, i) => i)
+                            .reverse()
+                            .map((hour) => (
+                              <Button
+                                key={hour}
+                                size="icon"
+                                variant={
+                                  field.value && field.value.getHours() === hour
+                                    ? "default"
+                                    : "ghost"
+                                }
+                                className="sm:w-full shrink-0 aspect-square"
+                                onClick={() =>
+                                  handleTimeChange("hour", hour.toString(), "start")
+                                }
+                              >
+                                {hour}
+                              </Button>
+                            ))}
+                        </div>
+                        <ScrollBar
+                          orientation="horizontal"
+                          className="sm:hidden"
+                        />
+                      </ScrollArea>
+                      <ScrollArea className="w-64 sm:w-auto">
+                        <div className="flex sm:flex-col p-2">
+                          {Array.from({ length: 12 }, (_, i) => i * 5).map(
+                            (minute) => (
+                              <Button
+                                key={minute}
+                                size="icon"
+                                variant={
+                                  field.value &&
+                                    field.value.getMinutes() === minute
+                                    ? "default"
+                                    : "ghost"
+                                }
+                                className="sm:w-full shrink-0 aspect-square"
+                                onClick={() =>
+                                  handleTimeChange("minute", minute.toString(), "start")
+                                }
+                              >
+                                {minute.toString().padStart(2, "0")}
+                              </Button>
+                            )
+                          )}
+                        </div>
+                        <ScrollBar
+                          orientation="horizontal"
+                          className="sm:hidden"
+                        />
+                      </ScrollArea>
+                    </div>
+                  </div>
+
                 </PopoverContent>
               </Popover>
               <FormMessage />
@@ -225,7 +299,7 @@ const AuctionForm = ({ clsoseDialog }: IProps) => {
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, "MM/dd/yyyy HH:mm")
                       ) : (
                         <span>Select End Time</span>
                       )}
@@ -234,15 +308,73 @@ const AuctionForm = ({ clsoseDialog }: IProps) => {
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date <= new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
+                  <div className="flex">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      fromDate={new Date()}
+                      initialFocus
+                    />
+                    <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                      <ScrollArea className="w-64 sm:w-auto">
+                        <div className="flex sm:flex-col p-2">
+                          {Array.from({ length: 24 }, (_, i) => i)
+                            .reverse()
+                            .map((hour) => (
+                              <Button
+                                key={hour}
+                                size="icon"
+                                variant={
+                                  field.value && field.value.getHours() === hour
+                                    ? "default"
+                                    : "ghost"
+                                }
+                                className="sm:w-full shrink-0 aspect-square"
+                                onClick={() =>
+                                  handleTimeChange("hour", hour.toString(), "end")
+                                }
+                              >
+                                {hour}
+                              </Button>
+                            ))}
+                        </div>
+                        <ScrollBar
+                          orientation="horizontal"
+                          className="sm:hidden"
+                        />
+                      </ScrollArea>
+                      <ScrollArea className="w-64 sm:w-auto">
+                        <div className="flex sm:flex-col p-2">
+                          {Array.from({ length: 12 }, (_, i) => i * 5).map(
+                            (minute) => (
+                              <Button
+                                key={minute}
+                                size="icon"
+                                variant={
+                                  field.value &&
+                                    field.value.getMinutes() === minute
+                                    ? "default"
+                                    : "ghost"
+                                }
+                                className="sm:w-full shrink-0 aspect-square"
+                                onClick={() =>
+                                  handleTimeChange("minute", minute.toString(), "end")
+                                }
+                              >
+                                {minute.toString().padStart(2, "0")}
+                              </Button>
+                            )
+                          )}
+                        </div>
+                        <ScrollBar
+                          orientation="horizontal"
+                          className="sm:hidden"
+                        />
+                      </ScrollArea>
+                    </div>
+                  </div>
+
                 </PopoverContent>
               </Popover>
               <FormMessage />
@@ -250,7 +382,12 @@ const AuctionForm = ({ clsoseDialog }: IProps) => {
           )}
         />
         <div className="w-full flex justify-end gap-2">
-          <Button type="submit" className="w-full bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]">Submit</Button>
+          <Button type="submit" className="w-full bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]">
+            {
+              isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            }
+            Submit
+          </Button>
         </div>
 
       </form>

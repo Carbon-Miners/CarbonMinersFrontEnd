@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useBidUpdate, useGetAuctionDetail, useGetBidDetails } from "@/utils/react-query/userApi";
 import { useEffect, useState } from "react";
 import { AuctionRsp, IBidCard } from "@/types";
@@ -24,8 +24,10 @@ import { waitForTransactionReceipt } from "@wagmi/core";
 import { wagmiConfig } from "@/utils/wagmi-config";
 import { useToast } from "@/hooks/use-toast";
 import { carbonTraderAbi } from "~/carbonTrader";
-import { carbonTraderAddress } from "@/config";
+import { carbonTraderAddress, erc20Address } from "@/config";
 import { Loader2 } from "lucide-react";
+import { erc20Abi } from "~/erc20";
+import { parseEther } from "viem";
 
 const formSchema = z.object({
   bidPassword: z.string({
@@ -33,11 +35,9 @@ const formSchema = z.object({
   })
 });
 
-const BidDetails = ({ bidID }: { bidID: string }) => {
-
+const BidDetails = ({ params: { bidID = '' } }) => {
+  const [bidId, acutionId] = bidID.split('-');
   const { toast } = useToast();
-  const [auctionID, setAuctionID] = useState("");
-  // const [loading, setLoading] = useState(false);
   const { mutateAsync: bidUpdate } = useBidUpdate();
   const [bidDetail, setBidDetail] = useState<IBidCard>({} as IBidCard);
   const [auctionDetail, setAuctionDetail] = useState<AuctionRsp>({} as AuctionRsp);
@@ -63,15 +63,51 @@ const BidDetails = ({ bidID }: { bidID: string }) => {
       }
     }
   })
+  const { writeContract: approve, isSuccess: approveSuccess } = useWriteContract({
+    mutation: {
+      onSuccess: async (hash, variables) => {
+        const listReceipt = await waitForTransactionReceipt(wagmiConfig,
+          { hash });
+        if (listReceipt.status === "success") {
+          toast({
+            description: "Approved successfully!",
+          });
+        }
+      },
+      onError: (error) => {
+        toast({
+          description: "Error: " + ((error as BaseError).shortMessage || error.message)
+        });
+      }
+    }
+  });
+  const { writeContract: finalize, isSuccess: finalizeSuccess } = useWriteContract({
+    mutation: {
+      onSuccess: async (hash, variables) => {
+        const listReceipt = await waitForTransactionReceipt(wagmiConfig,
+          { hash });
+        if (listReceipt.status === "success") {
+          toast({
+            description: "finalize successfully!",
+          });
+        }
+      },
+      onError: (error) => {
+        toast({
+          description: "Error: " + ((error as BaseError).shortMessage || error.message)
+        });
+      }
+    }
+  });
 
-  const { data: bidData } = useGetBidDetails(bidID);
-  const { data: acutionData, refetch } = useGetAuctionDetail(auctionID);
+  const { data: bidData } = useGetBidDetails(bidId);
+  const { data: acutionData, refetch } = useGetAuctionDetail(acutionId);
 
   useEffect(() => {
     if (bidData) {
-      setAuctionID(bidData.data.auctionID);
+      // setAuctionID(bidData.data.auctionID);
       setBidDetail(bidData.data);
-      refetch();
+      // refetch();
     }
   }, [bidData]);
   useEffect(() => {
@@ -93,7 +129,7 @@ const BidDetails = ({ bidID }: { bidID: string }) => {
   const submitBidSecret = async (hash: string) => {
     const getFormValues = form.getValues();
     const res = await bidUpdate({
-      biddingID: bidID,
+      biddingID: bidId,
       biddingMsg: decrypt(bidDetail.biddingMsg, getFormValues.bidPassword),
       hash: hash,
       status: '2'
@@ -106,11 +142,22 @@ const BidDetails = ({ bidID }: { bidID: string }) => {
   }
 
   const approveToken = () => {
-
+    approve({
+      abi: erc20Abi,
+      address: erc20Address,
+      functionName: 'approve',
+      args: [carbonTraderAddress, parseEther(String(bidDetail.additionalAmountToPay))]
+    })
   }
 
   const finalizeAuction = () => {
-
+    console.log(BigInt(bidDetail.auctionID), BigInt(bidDetail.allocateAmount), parseEther(String(bidDetail.additionalAmountToPay)));
+    finalize({
+      abi: carbonTraderAbi,
+      address: carbonTraderAddress,
+      functionName: 'finalizeAuctionAndTransferCarbon',
+      args: [BigInt(bidDetail.auctionID), BigInt(bidDetail.allocateAmount), parseEther(String(bidDetail.additionalAmountToPay))]
+    })
   }
 
   const judgeComponent = (status: string) => {
@@ -122,7 +169,7 @@ const BidDetails = ({ bidID }: { bidID: string }) => {
       case "1":
         return (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(openBid)} className="space-y-2 w-[600px]">
+            <form onSubmit={form.handleSubmit(openBid)} className="space-y-2 w-full">
               <FormField
                 control={form.control}
                 name="bidPassword"
@@ -130,7 +177,7 @@ const BidDetails = ({ bidID }: { bidID: string }) => {
                   <FormItem>
                     <FormLabel>Auction Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Set An Auction Password" {...field} />
+                      <Input type="password" placeholder="Set An Auction Password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -138,9 +185,9 @@ const BidDetails = ({ bidID }: { bidID: string }) => {
               />
               <div className="w-full flex justify-end">
                 <Button type="submit" className="w-1/2 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]">
-                  {
+                  {/* {
                     isSuccess && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  }
+                  } */}
                   Open Bid
                 </Button>
               </div>
@@ -156,14 +203,14 @@ const BidDetails = ({ bidID }: { bidID: string }) => {
         return (
           <div className="flex flex-col gap-2">
             <div className="flex justify-between font-bold text-[--secondry-text]">
-              <span>Minimum Bid Amount</span>
+              <span>Number of Awards</span>
               <span>{bidDetail.allocateAmount}</span>
             </div>
-            <div className="flex gap-2">
-              <div className="cursor-pointer w-[100px] h-[40px] flex justify-center items-center bg-[--button-bg] text-center rounded-lg text-[--basic-text]" onClick={approveToken}>
+            <div className="flex gap-2 justify-end">
+              <div className="cursor-pointer px-4 h-[40px] flex justify-center items-center bg-[--button-bg] text-center rounded-lg text-[--basic-text]" onClick={approveToken}>
                 Approve
               </div>
-              <div className="cursor-pointer w-[100px] h-[40px] flex justify-center items-center py-1 bg-[--button-bg] text-center rounded-lg text-[--basic-text]" onClick={finalizeAuction}>
+              <div className="cursor-pointer px-4 h-[40px] flex justify-center items-center py-1 bg-[--button-bg] text-center rounded-lg text-[--basic-text]" onClick={finalizeAuction}>
                 Finalize Auction
               </div>
             </div>

@@ -122,3 +122,44 @@ class Request {
 const request = new Request();
 
 export default request;
+
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// /**
+//  * GET请求.
+//  * @param path 请求路径.
+//  * @param params 请求参数.
+//  * @returns 响应.
+//  */
+// const commonFetch = async (path: string, params?: Record<string, string>) => {
+//   const url = new URL(path, API_BASE_URL);
+//   if (params) {
+//     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+//   }
+
+//   const response = await fetch(url);
+//   if (!response.ok) {
+//     throw new Error('Network response was not ok');
+//   }
+//   return response.json();
+// };
+
+// /**
+//  * POST请求.
+//  * @param path 请求路径.
+//  * @param data 请求参数.
+//  * @returns 响应.
+//  */
+// const commonPost = async (path: string, data: any) => {
+//   const response = await fetch(`${API_BASE_URL}${path}`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/x-www-form-urlencoded'
+//     },
+//     body: data,
+//   });
+
+//   if (!response.ok) {
+//     throw new Error('Network response was not ok');
+//   }
+//   return response.json();
+// };
