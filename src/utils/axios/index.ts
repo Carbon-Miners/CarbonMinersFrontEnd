@@ -78,7 +78,7 @@ export function baseHttp(
   });
 }
 
-export let get = (url: string, config: AxiosRequestConfig & any = {}) => {
+export function get(url: string, config: AxiosRequestConfig & any = {}){
   return baseHttp(url, Method.GET, config);
 };
 
