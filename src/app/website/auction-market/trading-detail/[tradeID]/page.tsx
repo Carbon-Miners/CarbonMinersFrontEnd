@@ -202,7 +202,7 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 	const router = useRouter();
 
 	return (
-		<div className="   relative flex flex-col p-10 m-5 bg-[#242731] rounded-[6px]">
+		<div className="relative flex flex-col p-10 m-5 bg-[#242731] rounded-[6px] overflow-auto">
 			{/* {isLoading && <Loader />} */}
 			<h1
 				className="text-[--basic-text] text-xl font-bold cursor-pointer"

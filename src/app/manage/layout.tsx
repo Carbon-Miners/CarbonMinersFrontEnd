@@ -31,7 +31,7 @@ const WebsiteLayout = ({ children }: { children: React.ReactNode }) => {
 			<div className="flex-[1]">
 				<AsideComponent menuList={menuList} />
 			</div>
-			<div className="flex-[4] p-4 flex flex-col overflow-y-hidden">
+			<div className="flex-[4] p-4 flex flex-col">
 				<div className="w-full flex justify-end">
 					<div className="min-w-[149px] h-[40px] px-4 rounded-[16px] bg-[--button-bg] text-[--basic-text] flex justify-center items-center font-bold cursor-pointer">
 						{clientAddress ? formatAddress(clientAddress) : "Loading..."}
