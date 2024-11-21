@@ -4,6 +4,7 @@ import { AuctionRsp } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { calcTime, formatAddress } from "@/utils";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface IProps {
 	cardInfo: AuctionRsp;
@@ -67,38 +68,45 @@ const ListCard = ({ cardInfo, menu }: IProps) => {
 	};
 
 	return (
-		<Link
-			href={`/website/${menu}/trading-detail/${cardInfo.tradeID}`}
-			className="cursor-pointer hover:scale-105"
+		<motion.div
+			className="box"
+			whileHover={{ scale: 1.1 }}
+			whileTap={{ scale: 0.9 }}
+			transition={{ type: "spring", stiffness: 400, damping: 10 }}
 		>
-			<Card className="bg-[#242731]">
-				<CardHeader>
-					<div className="flex items-center justify-between">
-						<CardTitle>{formatAddress(cardInfo.seller)}</CardTitle>
-						{calcStatus(cardInfo.startTime, cardInfo.endTime)}
-					</div>
-				</CardHeader>
-				<CardContent className="grid gap-4 pt-2">
-					<Image
-						src="/carbon.png"
-						alt="carbon"
-						width={256}
-						height={192}
-					></Image>
+			<Link
+				href={`/website/${menu}/trading-detail/${cardInfo.tradeID}`}
+				className="cursor-pointer hover:scale-105"
+			>
+				<Card className="bg-[#242731]">
+					<CardHeader>
+						<div className="flex items-center justify-between">
+							<CardTitle>{formatAddress(cardInfo.seller)}</CardTitle>
+							{calcStatus(cardInfo.startTime, cardInfo.endTime)}
+						</div>
+					</CardHeader>
+					<CardContent className="grid gap-4 pt-2">
+						<Image
+							src="/carbon.png"
+							alt="carbon"
+							width={256}
+							height={192}
+						></Image>
 
-					<div className="flex flex-col gap-1">
-						{PropertiesList.map((item, index) => (
-							<div className="flex justify-between items-center" key={index}>
-								<p className="text-sm text-muted-foreground">{item.title}:</p>
-								{item.key === "startTime" || item.key === "endTime"
-									? calcTime(cardInfo[item.key as keyof typeof cardInfo])
-									: cardInfo[item.key as keyof typeof cardInfo]}
-							</div>
-						))}
-					</div>
-				</CardContent>
-			</Card>
-		</Link>
+						<div className="flex flex-col gap-1">
+							{PropertiesList.map((item, index) => (
+								<div className="flex justify-between items-center" key={index}>
+									<p className="text-sm text-muted-foreground">{item.title}:</p>
+									{item.key === "startTime" || item.key === "endTime"
+										? calcTime(cardInfo[item.key as keyof typeof cardInfo])
+										: cardInfo[item.key as keyof typeof cardInfo]}
+								</div>
+							))}
+						</div>
+					</CardContent>
+				</Card>
+			</Link>
+		</motion.div>
 	);
 };
 export default ListCard;
