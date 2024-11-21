@@ -34,7 +34,7 @@ const BidData = [
 	},
 ];
 
-const TradingMarket = () => {
+const AuctionMarket = () => {
 	const { addressConnect } = useStore();
 	const { data: auctionList } = useGetAuctionList();
 	const { data: bidList } = useGetBidList(addressConnect);
@@ -96,11 +96,11 @@ const TradingMarket = () => {
 						<DialogHeader>
 							<DialogTitle>Start Auction</DialogTitle>
 						</DialogHeader>
-						<AuctionForm clsoseDialog={setShowDialog} />
+						<AuctionForm close={setShowDialog} />
 					</DialogContent>
 				</Dialog>
 			</div>
 		</div>
 	);
 };
-export default TradingMarket;
+export default AuctionMarket;

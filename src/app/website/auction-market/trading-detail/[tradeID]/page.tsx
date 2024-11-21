@@ -31,6 +31,7 @@ import { AuctionRsp } from "@/types";
 import { formatEther, parseEther } from "viem";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/icon";
 
 const formSchema = z.object({
 	allowance: z.string({
@@ -204,10 +205,16 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 	return (
 		<div className="relative flex flex-col p-10 m-5 bg-[#242731] rounded-[6px] overflow-auto">
 			{/* {isLoading && <Loader />} */}
-			<h1
-				className="text-[--basic-text] text-xl font-bold cursor-pointer"
-				onClick={() => router.back()}
-			>{`< Auction Detail`}</h1>
+			<div className="flex items-center">
+				<Icon.back
+					className="h-10 w-10 hover:scale-110 transition-all cursor-pointer"
+					onClick={() => router.back()}
+				/>
+				<h1 className="text-[--basic-text] text-xl font-bold">
+					{auctionInfo?.seller}
+				</h1>
+			</div>
+
 			<div className="bg-[#353945] flex flex-col gap-2 mt-5 rounded-[6px] ">
 				<div className="grid grid-cols-2 gap-2 p-5 text-[--secondry-text] text-sm">
 					{auctionInfo && (
@@ -238,12 +245,12 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 								<span className="text-[#FFFFFF] text-xl mb-2">End Time:</span>
 								<span>{calcTime(auctionInfo.endTime)}</span>
 							</div>
-							<div className="flex flex-col justify-between">
+							{/* <div className="flex flex-col justify-between">
 								<span className="text-[#FFFFFF] text-xl mb-2">
 									Seller Address:
 								</span>
 								<span>{auctionInfo.seller}</span>
-							</div>
+							</div> */}
 							<div className="flex flex-col justify-between">
 								<span className="text-[#FFFFFF] text-xl mb-2">
 									Transaction Hash:
