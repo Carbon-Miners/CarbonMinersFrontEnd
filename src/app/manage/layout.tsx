@@ -17,10 +17,17 @@ const menuList = [
 ];
 
 const WebsiteLayout = ({ children }: { children: React.ReactNode }) => {
+	const router = useRouter();
 	const { address } = useAccount();
 	const [clientAddress, setClientAddress] = useState<`0x${string}` | undefined>(
 		undefined
 	);
+	const { disconnect } = useDisconnect();
+
+	const exitSystem = () => {
+		disconnect();
+		router.push("/");
+	};
 
 	useEffect(() => {
 		setClientAddress(address);
@@ -33,7 +40,10 @@ const WebsiteLayout = ({ children }: { children: React.ReactNode }) => {
 			</div>
 			<div className="flex-[4] p-4 flex flex-col">
 				<div className="w-full flex justify-end">
-					<div className="min-w-[149px] h-[40px] px-4 rounded-[16px] bg-[--button-bg] text-[--basic-text] flex justify-center items-center font-bold cursor-pointer">
+					<div
+						className="min-w-[149px] h-[40px] px-4 rounded-[16px] bg-[--button-bg] text-[--basic-text] flex justify-center items-center font-bold cursor-pointer"
+						onClick={exitSystem}
+					>
 						{clientAddress ? formatAddress(clientAddress) : "Loading..."}
 					</div>
 				</div>
