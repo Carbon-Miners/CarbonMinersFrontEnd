@@ -7,6 +7,7 @@ export enum QUERY_KEYS {
 	GET_AUCTION_LIST = "getAuctionList",
 	GET_BID_LIST = "getBidList",
 	GET_BID_DETAILS = "getBidDetails",
+	GET_MY_AUCTION = "getMyAuction",
 
 	// REPORT KEYS
 	GET_REPORT_INFO = "getReportInfo",
@@ -29,6 +30,7 @@ export enum QUERY_PATHS {
 	AUCTION_START_PATH = "/api/auction/start-auction",
 	AUCTION_LIST_PATH = "/api/auction/list",
 	AUCTION_DETAIL_PATH = "/api/auction",
+	MY_AUCTION_PATH = "/api/auction/list/key",
 
 	//竞拍
 	BID_SUBMIT_PATH = "/api/bidding/submit-bidding",

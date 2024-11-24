@@ -18,6 +18,7 @@ import {
 	useGetBidList,
 } from "@/utils/react-query/userApi";
 import useStore from "@/store";
+import MyAuction from "@/components/MyAuction/page";
 
 const BidData = [
 	{
@@ -39,23 +40,12 @@ const AuctionMarket = () => {
 	const { data: auctionList } = useGetAuctionList();
 	const { data: bidList } = useGetBidList(addressConnect);
 
-	const [showDialog, setShowDialog] = useState(false);
-	const handleChange = (value: boolean) => {
-		setShowDialog(value);
-	};
-	// const refreshList = async () => {
-	//   const data = await queryClient.fetchQuery([QUERY_KEYS.GET_AUCTION_LIST],
-	//     () => getAuctionList(QUERY_PATHS.AUCTION_LIST_PATH)
-	//   );
-	// }
-
 	return (
 		<div className="w-full h-full relative">
 			<Tabs defaultValue="market" className="w-full h-full flex flex-col">
 				<TabsList className="grid w-[270px] grid-cols-3">
 					<TabsTrigger value="market">拍卖市场</TabsTrigger>
 					<TabsTrigger value="bid">投标追踪</TabsTrigger>
-					{/* <TabsTrigger value="normal">常规市场</TabsTrigger> */}
 					<TabsTrigger value="mine">我的拍卖</TabsTrigger>
 				</TabsList>
 				<TabsContent value="market" className="flex-[1]">
@@ -88,28 +78,12 @@ const AuctionMarket = () => {
 							})}
 					</div>
 				</TabsContent>
-				{/* <TabsContent value="nromal" className="flex-[1]">
-					我的
-				</TabsContent> */}
 				<TabsContent value="mine" className="flex-[1]">
-					我的项目
+					<div className="flex flex-wrap m-5">
+						<MyAuction />
+					</div>
 				</TabsContent>
 			</Tabs>
-			<div className="absolute right-5 top-1">
-				<Dialog open={showDialog} onOpenChange={handleChange}>
-					<DialogTrigger asChild>
-						<div className="px-3 py-1 rounded-[14px] bg-[--button-bg] text-[--basic-text] flex justify-center items-center font-bold cursor-pointer">
-							创建项目
-						</div>
-					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>Start Auction</DialogTitle>
-						</DialogHeader>
-						<AuctionForm close={setShowDialog} />
-					</DialogContent>
-				</Dialog>
-			</div>
 		</div>
 	);
 };

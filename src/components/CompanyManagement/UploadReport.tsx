@@ -75,9 +75,9 @@ const UploadReport = () => {
 						/>
 						<div className="w-full flex justify-end ">
 							<Button
-								variant={"outline"}
+								// variant={"outline"}
 								type="submit"
-								className="bg-[--button-bg]"
+								className="bg-[--button-bg] text-[--basic-text]"
 							>
 								Submit
 							</Button>

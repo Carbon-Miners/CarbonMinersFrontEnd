@@ -84,10 +84,9 @@ export const useStartAuction = () => {
 export const getAuctionList = (url: string) => {
 	return get(url);
 };
-export const useGetAuctionList = (): UseQueryResult<
-	IQueryResponse<AuctionRsp[]>,
-	Error
-> => {
+export const useGetAuctionList = (
+	publicKey?: string
+): UseQueryResult<IQueryResponse<AuctionRsp[]>, Error> => {
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_AUCTION_LIST],
 		queryFn: () => getAuctionList(QUERY_PATHS.AUCTION_LIST_PATH),
@@ -105,6 +104,20 @@ export const useGetAuctionDetail = (
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_COMPANY_INFO],
 		queryFn: () => getAuctionDetail(QUERY_PATHS.AUCTION_DETAIL_PATH, tradeID),
+	});
+};
+// 我的拍卖
+const getMyAuction = (url: string, publicKey: string) => {
+	return get(url, {
+		params: { publicKey },
+	});
+};
+export const useGetMyAuction = (
+	publicKey: string
+): UseQueryResult<IQueryResponse<AuctionRsp[]>, Error> => {
+	return useQuery({
+		queryKey: [QUERY_KEYS.GET_MY_AUCTION],
+		queryFn: () => getMyAuction(QUERY_PATHS.MY_AUCTION_PATH, publicKey),
 	});
 };
 
