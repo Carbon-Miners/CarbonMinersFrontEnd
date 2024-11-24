@@ -49,10 +49,9 @@ const ListCard = ({ cardInfo, menu, index }: IProps) => {
 		return (
 			<div
 				className={cn(
-					`${
-						status.trading
-							? "bg-[#A162F7] bg-opacity-300"
-							: status.notStart
+					`${status.trading
+						? "bg-[#A162F7] bg-opacity-300"
+						: status.notStart
 							? "bg-[#FF6370] bg-opacity-300"
 							: "bg-[#A4A5A6] bg-opacity-300"
 					}`,
@@ -62,8 +61,8 @@ const ListCard = ({ cardInfo, menu, index }: IProps) => {
 				{status.trading
 					? "Trading"
 					: status.notStart
-					? "Not Start"
-					: "Finished"}
+						? "Not Start"
+						: "Finished"}
 			</div>
 		);
 	};
@@ -71,7 +70,7 @@ const ListCard = ({ cardInfo, menu, index }: IProps) => {
 	return (
 		<motion.div
 			className="box"
-			whileHover={{ scale: 1.1 }}
+			whileHover={{ scale: 1.02 }}
 			whileTap={{ scale: 0.9 }}
 			transition={{ type: "spring", stiffness: 400, damping: 10 }}
 		>

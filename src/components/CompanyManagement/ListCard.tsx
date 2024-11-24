@@ -23,10 +23,9 @@ const CompanyCard = ({ cardInfo, index }: IProps) => {
 		return (
 			<div
 				className={cn(
-					`${
-						status === StatusEnum.PASSED
-							? "bg-[#A162F7] bg-opacity-300"
-							: status === StatusEnum.UNHANDLE
+					`${status === StatusEnum.PASSED
+						? "bg-[#A162F7] bg-opacity-300"
+						: status === StatusEnum.UNHANDLE
 							? "bg-[#FF6370] bg-opacity-300"
 							: "bg-[#A4A5A6] bg-opacity-300"
 					}`,
@@ -36,15 +35,15 @@ const CompanyCard = ({ cardInfo, index }: IProps) => {
 				{status === StatusEnum.PASSED
 					? "Approved"
 					: status === StatusEnum.UNHANDLE
-					? "Unapproved"
-					: "Rejected"}
+						? "Unapproved"
+						: "Rejected"}
 			</div>
 		);
 	};
 	return (
 		<motion.div
 			className="box"
-			whileHover={{ scale: 1.1 }}
+			whileHover={{ scale: 1.02 }}
 			whileTap={{ scale: 0.9 }}
 			transition={{ type: "spring", stiffness: 400, damping: 10 }}
 		>

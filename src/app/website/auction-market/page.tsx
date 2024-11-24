@@ -1,39 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
-import AuctionForm from "@/components/TradingMarket/AuctionForm";
 import ListCard from "@/components/TradingMarket/ListCard";
 import BidCard from "@/components/TradingMarket/BidCard";
 import {
 	useGetAuctionList,
-	getAuctionList,
 	useGetBidList,
 } from "@/utils/react-query/userApi";
 import useStore from "@/store";
 import MyAuction from "@/components/MyAuction/page";
-
-const BidData = [
-	{
-		id: "bid01",
-		buyer: "0x5d685c71B40Ad741dbA424229FD641816E9A6395",
-		auctionID: "0336",
-		biddingID: "0155",
-		biddingMsg: "hello",
-		biddingStatus: "0",
-		allocateAmount: 655,
-		additionalAmountToPay: 60,
-		biddingTime: "1733200925000",
-		hash: "0xdfef2feffef",
-	},
-];
 
 const AuctionMarket = () => {
 	const { addressConnect } = useStore();

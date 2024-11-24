@@ -13,11 +13,6 @@ export const erc20Abi = [
         "internalType": "string"
       },
       {
-        "name": "initialAccount",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
         "name": "initialBalance",
         "type": "uint256",
         "internalType": "uint256"

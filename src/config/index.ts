@@ -1,2 +1,2 @@
-export const carbonTraderAddress = "0x8B3b2369F386eE2E6c96271dFB40971667fe30B9"
-export const erc20Address = "0xFE8cD4998825256Aa61F58383840f0e09Cde1085"
+export const carbonTraderAddress = "0xE51aFD3aACacFE2EfFC08913cf3c8c14aC188544"
+export const erc20Address = "0xf0c75d5f53DeC8294101B474F77aEC13E444f6a3"

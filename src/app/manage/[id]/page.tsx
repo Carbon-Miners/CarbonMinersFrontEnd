@@ -125,11 +125,13 @@ const CompanyDetail = ({ params: { id = "" } }) => {
 	}, [reportData]);
 
 	const handlePass = async (status: StatusEnum) => {
-		const result = await checkEntry({ id: companyData!.data.id, status });
+		setIsLoading(true);
+		const result = await checkEntry({ id: companyData!.data.id, status, address: id });
 		if (result) {
 			toast({
 				description: "Handle Success!",
 			});
+			setIsLoading(false);
 		}
 	};
 
@@ -260,8 +262,8 @@ const CompanyDetail = ({ params: { id = "" } }) => {
 									(companyInfo!.status === StatusEnum.PASSED
 										? "Approved"
 										: companyInfo!.status === StatusEnum.UNHANDLE
-										? "Unapproved"
-										: "Rejected")}
+											? "Unapproved"
+											: "Rejected")}
 							</span>
 						</div>
 						<div className="flex flex-col justify-between">
@@ -320,6 +322,11 @@ const CompanyDetail = ({ params: { id = "" } }) => {
 							className="cursor-pointer w-[100px] h-[40px] flex justify-center items-center bg-[--button-bg] text-center rounded-lg text-[--basic-text]"
 							onClick={() => handlePass(StatusEnum.PASSED)}
 						>
+							{
+								isLoading && (
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								)
+							}
 							PASS
 						</div>
 						<div

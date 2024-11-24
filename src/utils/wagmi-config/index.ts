@@ -1,8 +1,8 @@
 import { http, createConfig } from '@wagmi/core'
-import { sepolia } from '@wagmi/core/chains'
+import { lineaSepolia } from '@wagmi/core/chains'
 export const wagmiConfig = createConfig({
-  chains: [sepolia],
+  chains: [lineaSepolia],
   transports: {
-    [sepolia.id]: http("https://eth-sepolia.g.alchemy.com/v2/-SRymV4bA08HcL1DulqFxNPTgMftEopr")
+    [lineaSepolia.id]: http("https://linea-sepolia.infura.io/v3/848cf931324945a3a7b063cbe69372c4")
   },
 })

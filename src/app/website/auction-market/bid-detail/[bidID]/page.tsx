@@ -28,7 +28,6 @@ import { carbonTraderAddress, erc20Address } from "@/config";
 import { Loader2 } from "lucide-react";
 import { erc20Abi } from "~/erc20";
 import { parseEther } from "viem";
-import { readContract } from '@wagmi/core'
 
 const formSchema = z.object({
   bidPassword: z.string({
@@ -156,7 +155,7 @@ const BidDetails = ({ params: { bidID = '' } }) => {
       abi: carbonTraderAbi,
       address: carbonTraderAddress,
       functionName: 'finalizeAuctionAndTransferCarbon',
-      args: [BigInt(bidDetail.auctionID), BigInt(bidDetail.allocateAmount), parseEther(String(bidDetail.additionalAmountToPay))]
+      args: [BigInt(bidDetail.auctionID), parseEther(String(bidDetail.additionalAmountToPay))]
     })
   }
 

@@ -16,8 +16,9 @@ const CompanyManage = () => {
 	const addressConnect = useStore((state) => state.addressConnect);
 	const [companyInfo, setCompanyInfo] = useState<ICompanyInfo>();
 	const { data: companyData } = useGetCompanyInfo(addressConnect!);
+	// const [showApply, setShowApply] = useState(true);
 
-	const [tabDefault, setTabValue] = useState("");
+	const [tabDefault, setTabValue] = useState(CompanyEnum.INFOS);
 
 	useEffect(() => {
 		if (
@@ -26,6 +27,7 @@ const CompanyManage = () => {
 			companyData.data.companyMsg
 		) {
 			const companyObj = JSON.parse(companyData.data.companyMsg);
+			// setShowApply(false);
 			setCompanyInfo({
 				...companyObj,
 				status: companyData.data.status,
@@ -33,15 +35,15 @@ const CompanyManage = () => {
 		}
 	}, [companyData]);
 
-	useEffect(() => {
-		if (companyInfo) {
-			if (companyInfo.status === StatusEnum.PASSED) {
-				setTabValue(CompanyEnum.INFOS);
-			} else {
-				setTabValue(CompanyEnum.SETTLED);
-			}
-		}
-	}, [companyInfo]);
+	// useEffect(() => {
+	// 	if (companyInfo) {
+	// 		if (companyInfo.status === StatusEnum.PASSED) {
+	// 			setTabValue(CompanyEnum.INFOS);
+	// 		} else {
+	// 			setTabValue(CompanyEnum.SETTLED);
+	// 		}
+	// 	}
+	// }, [companyInfo]);
 
 	const changeTab = (value: string) => {
 		setTabValue(value as CompanyEnum);
@@ -54,13 +56,12 @@ const CompanyManage = () => {
 			className="w-full h-full flex flex-col"
 		>
 			<TabsList
-				className={`grid w-[420px] ${
-					companyInfo?.status === StatusEnum.PASSED
-						? "grid-cols-4"
-						: "grid-cols-5"
-				}`}
+				className={`grid w-[420px] ${companyInfo?.status === StatusEnum.PASSED
+					? "grid-cols-4"
+					: "grid-cols-5"
+					}`}
 			>
-				{companyInfo && companyInfo!.status !== StatusEnum.PASSED && (
+				{!companyInfo && (
 					<TabsTrigger value="settled">申请入驻</TabsTrigger>
 				)}
 				<TabsTrigger value="infos">公司信息</TabsTrigger>
@@ -68,7 +69,7 @@ const CompanyManage = () => {
 				<TabsTrigger value="upload">提交报告</TabsTrigger>
 				<TabsTrigger value="check">核查清缴</TabsTrigger>
 			</TabsList>
-			{companyInfo && companyInfo!.status !== StatusEnum.PASSED && (
+			{!companyInfo && (
 				<TabsContent value="settled" className="flex-[1]">
 					<ApplyForm setTabValue={changeTab} />
 				</TabsContent>
