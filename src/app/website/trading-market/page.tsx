@@ -58,7 +58,12 @@ const TradingMarket = () => {
 						{tradeList &&
 							tradeList.data.map((item, index) => {
 								return (
-									<ListCard key={index} cardInfo={item} menu="trade-market" />
+									<ListCard
+										key={index}
+										cardInfo={item}
+										menu="trade-market"
+										index={index}
+									/>
 								);
 							})}
 					</div>
@@ -68,7 +73,12 @@ const TradingMarket = () => {
 						{bidList &&
 							bidList.data.map((item, index) => {
 								return (
-									<BidCard key={index} bidInfo={item} menu="trade-market" />
+									<BidCard
+										key={index}
+										bidInfo={item}
+										menu="trade-market"
+										index={index}
+									/>
 								);
 							})}
 					</div>

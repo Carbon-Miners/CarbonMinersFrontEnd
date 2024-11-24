@@ -3,12 +3,13 @@ import Link from "next/link";
 import { AuctionRsp } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { calcTime, formatAddress } from "@/utils";
-import { cn } from "@/lib/utils";
+import { cn, getImage } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 interface IProps {
 	cardInfo: AuctionRsp;
 	menu?: string;
+	index: number;
 }
 
 const PropertiesList = [
@@ -34,7 +35,7 @@ const PropertiesList = [
 	},
 ];
 
-const ListCard = ({ cardInfo, menu }: IProps) => {
+const ListCard = ({ cardInfo, menu, index }: IProps) => {
 	const calcStatus = (startTime: string, endTime: string) => {
 		const nowDate = new Date();
 		const start = new Date(startTime);
@@ -87,7 +88,7 @@ const ListCard = ({ cardInfo, menu }: IProps) => {
 					</CardHeader>
 					<CardContent className="grid gap-4 pt-2">
 						<Image
-							src="/carbon.png"
+							src={`/${getImage(index)}.png`}
 							alt="carbon"
 							width={256}
 							height={192}

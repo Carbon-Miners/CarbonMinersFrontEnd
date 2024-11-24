@@ -56,14 +56,19 @@ const AuctionMarket = () => {
 					<TabsTrigger value="market">拍卖市场</TabsTrigger>
 					<TabsTrigger value="bid">投标追踪</TabsTrigger>
 					{/* <TabsTrigger value="normal">常规市场</TabsTrigger> */}
-					<TabsTrigger value="mine">我的项目</TabsTrigger>
+					<TabsTrigger value="mine">我的拍卖</TabsTrigger>
 				</TabsList>
 				<TabsContent value="market" className="flex-[1]">
 					<div className="flex flex-wrap gap-4">
 						{auctionList &&
 							auctionList.data.map((item, index) => {
 								return (
-									<ListCard key={index} cardInfo={item} menu="auction-market" />
+									<ListCard
+										key={index}
+										cardInfo={item}
+										menu="auction-market"
+										index={index}
+									/>
 								);
 							})}
 					</div>
@@ -73,7 +78,12 @@ const AuctionMarket = () => {
 						{bidList &&
 							bidList.data.map((item, index) => {
 								return (
-									<BidCard key={index} bidInfo={item} menu="auction-market" />
+									<BidCard
+										key={index}
+										bidInfo={item}
+										menu="auction-market"
+										index={index}
+									/>
 								);
 							})}
 					</div>

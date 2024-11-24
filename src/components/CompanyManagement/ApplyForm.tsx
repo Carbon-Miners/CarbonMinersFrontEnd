@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -19,9 +19,9 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "../ui/card";
 import { Loader2 } from "lucide-react";
-import { useApplyEntry } from "@/utils/react-query/userApi";
+import { useApplyEntry, useGetCompanyInfo } from "@/utils/react-query/userApi";
 import useStore from "@/store";
-import { CompanyEnum } from "@/types";
+import { CompanyEnum, ICompanyInfo, StatusEnum } from "@/types";
 
 const formSchema = z.object({
 	companyName: z.string({
@@ -58,9 +58,35 @@ const ApplyForm = ({
 	setTabValue: (value: CompanyEnum) => void;
 }) => {
 	const { addressConnect } = useStore();
+	const [companyInfo, setCompanyInfo] = useState<ICompanyInfo>();
+	const { data: companyData } = useGetCompanyInfo(addressConnect!);
 	const { mutateAsync: companyApply } = useApplyEntry();
 	const { toast } = useToast();
 	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		if (
+			companyData &&
+			companyData.code === 200 &&
+			companyData.data.companyMsg
+		) {
+			const companyObj = JSON.parse(companyData.data.companyMsg);
+			setCompanyInfo({
+				...companyObj,
+				status: companyData.data.status,
+			});
+		}
+	}, [companyData]);
+
+	useEffect(() => {
+		if (companyInfo) {
+			if (companyInfo.status === StatusEnum.PASSED) {
+				setTabValue(CompanyEnum.INFOS);
+			} else {
+				setTabValue(CompanyEnum.SETTLED);
+			}
+		}
+	}, [companyInfo]);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -96,6 +122,11 @@ const ApplyForm = ({
 
 	return (
 		<div className="relative flex flex-col p-10 m-5 bg-[#242731] rounded-[6px] overflow-auto">
+			{/* {companyInfo && companyInfo!.status === StatusEnum.UNHANDLE ? (
+				<h2 className="text-[#FFFFFF] text-xl mb-2 h-[300px] flex items-center justify-center">
+					<span>Your application is under review... </span>
+				</h2>
+			) : ( */}
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
@@ -263,6 +294,7 @@ const ApplyForm = ({
 					{/* </div> */}
 				</form>
 			</Form>
+			{/* )} */}
 		</div>
 	);
 };

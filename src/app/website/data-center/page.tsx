@@ -1,8 +1,6 @@
+import { ComingSoon } from "@/components/ComingSoon";
+
 const DataCenter = () => {
-  return (
-    <>
-      <div>数据中心</div>
-    </>
-  );
+	return <ComingSoon />;
 };
 export default DataCenter;

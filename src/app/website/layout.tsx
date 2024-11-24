@@ -30,11 +30,11 @@ const menuList = [
 	// }
 ];
 
-const websiteLayout = ({ children }: { children: React.ReactNode }) => {
+const WebsiteLayout = ({ children }: { children: React.ReactNode }) => {
 	const router = useRouter();
 	const { address } = useAccount();
 	const { disconnect } = useDisconnect();
-	const { setAddr } = useStore();
+	const setAddr = useStore((state) => state.setAddr);
 	const [clientAddress, setClientAddress] = useState<`0x${string}` | undefined>(
 		undefined
 	);
@@ -68,4 +68,4 @@ const websiteLayout = ({ children }: { children: React.ReactNode }) => {
 	);
 };
 
-export default websiteLayout;
+export default WebsiteLayout;

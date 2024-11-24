@@ -54,7 +54,7 @@ export const useGetCompanyInfo = (
 	publicKey: string
 ): UseQueryResult<IQueryResponse<any>, Error> => {
 	return useQuery({
-		queryKey: [QUERY_KEYS.GET_COMPANY_INFO],
+		queryKey: [QUERY_KEYS.GET_COMPANY_INFO, publicKey],
 		queryFn: () => getCompanyInfo(QUERY_PATHS.COMPANY_INFO_PATH, publicKey),
 	});
 };

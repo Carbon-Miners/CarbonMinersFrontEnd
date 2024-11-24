@@ -3,14 +3,15 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { calcTime, formatAddress, formatHash } from "@/utils";
 import { IBidCard, BidEnum } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn, getImage } from "@/lib/utils";
 
 interface IProps {
 	bidInfo: IBidCard;
 	menu?: string;
+	index: number;
 }
 
-const BidCard = ({ bidInfo, menu }: IProps) => {
+const BidCard = ({ bidInfo, menu, index }: IProps) => {
 	const calcStatus = (biddingStatus: number) => {
 		const statusBg = [
 			"bg-green-200",
@@ -45,7 +46,7 @@ const BidCard = ({ bidInfo, menu }: IProps) => {
 				</CardHeader>
 				<CardContent className="grid gap-4 pt-2">
 					<Image
-						src="/carbon.png"
+						src={`/${getImage(index)}.png`}
 						alt="carbon"
 						width={256}
 						height={192}

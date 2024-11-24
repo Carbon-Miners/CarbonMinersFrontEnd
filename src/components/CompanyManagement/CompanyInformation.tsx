@@ -7,7 +7,7 @@ import {
 import { Card, CardContent } from "../ui/card";
 import useStore from "@/store";
 import { useEffect, useState } from "react";
-import { ICompanyInfo, ICompanyReport } from "@/types";
+import { ICompanyInfo, ICompanyReport, StatusEnum } from "@/types";
 import { useReadContracts } from "wagmi";
 import { carbonTraderAbi } from "~/carbonTrader";
 import { carbonTraderAddress, erc20Address } from "@/config";
@@ -150,7 +150,14 @@ const CompanyInformation = () => {
 				<div className="grid grid-cols-3 gap-2 text-[--secondry-text] text-sm">
 					<div className="flex flex-col justify-between">
 						<span className="text-[#E0E4E7] text-lg mb-2">Apply Status</span>
-						<span>{companyInfo && companyInfo!.status}</span>
+						<span>
+							{companyInfo &&
+								(companyInfo!.status === StatusEnum.PASSED
+									? "Approved"
+									: companyInfo!.status === StatusEnum.UNHANDLE
+									? "Unapproved"
+									: "Rejected")}
+						</span>
 					</div>
 					<div className="flex flex-col justify-between">
 						<span className="text-[#E0E4E7] text-lg mb-2">Allowance</span>
