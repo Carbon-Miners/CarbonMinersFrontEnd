@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import useStore from "@/store";
 import { useGetReportInfo, useSubmitReport } from "@/utils/react-query/userApi";
 import { useToast } from "@/hooks/use-toast";
+import { EmptyPage } from "../EmptyPage";
 
 const FormSchema = z.object({
 	report: z.string().min(10, {
@@ -89,7 +90,7 @@ const UploadReport = () => {
 				<div className="flex flex-col p-10">
 					<span className="text-[#FFFFFF] text-xl mb-2">Your Report：</span>
 					<p className="text-[--secondry-text]">
-						{(data && data.data.report) || "暂无"}
+						{(data && data.data.report) || <EmptyPage />}
 					</p>
 				</div>
 			</div>

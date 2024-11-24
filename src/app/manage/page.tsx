@@ -22,8 +22,8 @@ const ManagementPage = () => {
 			className="w-full h-full flex flex-col"
 		>
 			<TabsList className="grid w-[220px] grid-cols-2">
-				<TabsTrigger value="settled">公司列表</TabsTrigger>
-				<TabsTrigger value="check">核查清缴</TabsTrigger>
+				<TabsTrigger value="settled">Company List</TabsTrigger>
+				<TabsTrigger value="check">Check</TabsTrigger>
 			</TabsList>
 			<TabsContent value="settled" className="flex-[1]">
 				<div className="flex flex-wrap gap-4">

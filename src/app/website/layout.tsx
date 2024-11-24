@@ -3,26 +3,32 @@
 import AsideComponent from "@/components/SiteAside/SiteAside";
 import { useAccount, useDisconnect } from "wagmi";
 import { formatAddress } from "@/utils";
-import { useEffect, useState } from "react";
+import { JSXElementConstructor, useEffect, useState } from "react";
 import useStore from "@/store/index";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/icon";
+import { IMenuItem } from "@/types";
 
-const menuList = [
+const menuList: IMenuItem[] = [
 	{
-		title: "企业管理",
+		title: "Company Management",
 		path: "/website",
+		icon: Icon.companyManagement,
 	},
 	{
-		title: "拍卖中心",
+		title: "Auction Center",
 		path: "/website/auction-market",
+		icon: Icon.auctionCenter,
 	},
 	{
-		title: "交易中心",
+		title: "Trading Center",
 		path: "/website/trading-market",
+		icon: Icon.tradingCenter,
 	},
 	{
-		title: "数据中心",
+		title: "Data Center",
 		path: "/website/data-center",
+		icon: Icon.dataCenter,
 	},
 	// {
 	//   title: "监管处罚",

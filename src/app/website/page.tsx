@@ -56,18 +56,17 @@ const CompanyManage = () => {
 			className="w-full h-full flex flex-col"
 		>
 			<TabsList
-				className={`grid w-[420px] ${companyInfo?.status === StatusEnum.PASSED
-					? "grid-cols-4"
-					: "grid-cols-5"
-					}`}
+				className={`grid w-[420px] ${
+					companyInfo?.status === StatusEnum.PASSED
+						? "grid-cols-4"
+						: "grid-cols-5"
+				}`}
 			>
-				{!companyInfo && (
-					<TabsTrigger value="settled">申请入驻</TabsTrigger>
-				)}
-				<TabsTrigger value="infos">公司信息</TabsTrigger>
-				<TabsTrigger value="apply">额度申请</TabsTrigger>
-				<TabsTrigger value="upload">提交报告</TabsTrigger>
-				<TabsTrigger value="check">核查清缴</TabsTrigger>
+				{!companyInfo && <TabsTrigger value="settled">Apply</TabsTrigger>}
+				<TabsTrigger value="infos">Infos</TabsTrigger>
+				<TabsTrigger value="apply">Allowance</TabsTrigger>
+				<TabsTrigger value="upload">Report</TabsTrigger>
+				<TabsTrigger value="check">Check</TabsTrigger>
 			</TabsList>
 			{!companyInfo && (
 				<TabsContent value="settled" className="flex-[1]">

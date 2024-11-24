@@ -13,6 +13,7 @@ import { carbonTraderAbi } from "~/carbonTrader";
 import { carbonTraderAddress, erc20Address } from "@/config";
 import { erc20Abi } from "~/erc20";
 import { formatEther } from "viem";
+import { EmptyPage } from "../EmptyPage";
 // import { waitForTransactionReceipt } from "@wagmi/core";
 // import { wagmiConfig } from "@/utils/wagmi-config";
 
@@ -181,10 +182,14 @@ const CompanyInformation = () => {
 				<h2 className="text-[#FFFFFF] text-xl mb-5 font-bold">
 					Carbon Emission Report
 				</h2>
-				<div className="grid grid-cols-3 gap-2 text-[--secondry-text] text-sm">
+				<div className="grid  gap-2 text-[--secondry-text] text-sm">
 					<div className="flex flex-col justify-between">
 						<span className="text-[#E0E4E7] text-lg mb-2">Emission Report</span>
-						<span>{companyReport && companyReport.report}</span>
+						{companyReport && companyReport.report ? (
+							<span>{companyReport && companyReport.report}</span>
+						) : (
+							<EmptyPage />
+						)}
 					</div>
 				</div>
 			</div>

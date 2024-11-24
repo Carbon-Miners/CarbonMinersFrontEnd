@@ -48,10 +48,10 @@ const TradingMarket = () => {
 	return (
 		<div className="w-full h-full relative">
 			<Tabs defaultValue="market" className="w-full h-full flex flex-col">
-				<TabsList className="grid w-[270px] grid-cols-3">
-					<TabsTrigger value="market">交易市场</TabsTrigger>
-					<TabsTrigger value="bid">交易追踪</TabsTrigger>
-					<TabsTrigger value="mine">我的项目</TabsTrigger>
+				<TabsList className="grid w-[390px] grid-cols-3">
+					<TabsTrigger value="market">Trading Market</TabsTrigger>
+					<TabsTrigger value="bid">Trade Tracking</TabsTrigger>
+					<TabsTrigger value="mine">My Trading</TabsTrigger>
 				</TabsList>
 				<TabsContent value="market" className="flex-[1]">
 					<div className="flex flex-wrap gap-4">

@@ -1,8 +1,4 @@
-export interface IMenuItem {
-	path: string;
-	icon?: JSX.Element;
-	title: string;
-}
+import { LucideIcon } from "lucide-react";
 
 export interface IMenu {
 	menuList: IMenuItem[];
@@ -176,4 +172,10 @@ export interface ITradeUpdate {
 	priceOfUint: number;
 	status: number;
 	hash: string;
+}
+
+export interface IMenuItem {
+	title: string;
+	path: string;
+	icon?: LucideIcon; // 定义图标类型为 Lucide 提供的组件类型
 }

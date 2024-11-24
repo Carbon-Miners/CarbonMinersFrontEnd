@@ -86,6 +86,7 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 						toast({
 							description: "Approved successfully!",
 						});
+						router.back();
 					}
 				},
 				onError: (error) => {
@@ -215,7 +216,7 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 				</h1>
 			</div>
 
-			<div className="bg-[#353945] flex flex-col gap-2 mt-5 rounded-[6px] ">
+			<div className="bg-[#353945] flex flex-col gap-2 mt-5 rounded-[6px]">
 				<div className="grid grid-cols-2 gap-2 p-5 text-[--secondry-text] text-sm">
 					{auctionInfo && (
 						<>
@@ -245,12 +246,6 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 								<span className="text-[#FFFFFF] text-xl mb-2">End Time:</span>
 								<span>{calcTime(auctionInfo.endTime)}</span>
 							</div>
-							{/* <div className="flex flex-col justify-between">
-								<span className="text-[#FFFFFF] text-xl mb-2">
-									Seller Address:
-								</span>
-								<span>{auctionInfo.seller}</span>
-							</div> */}
 							<div className="flex flex-col justify-between">
 								<span className="text-[#FFFFFF] text-xl mb-2">
 									Transaction Hash:
@@ -362,14 +357,6 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 								</FormItem>
 							)}
 						/>
-						{/* <div className="w-full flex gap-2">
-                  <Button className="w-1/2 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]" onClick={approveToken}>
-                    Approve
-                  </Button>
-                  <Button className="w-1/2 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]" onClick={depositToken}>
-                    Deposit
-                  </Button>
-                </div> */}
 					</form>
 				</Form>
 			</div>

@@ -5,14 +5,18 @@ import { useAccount, useDisconnect } from "wagmi";
 import { formatAddress } from "@/utils";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-const menuList = [
+import { IMenuItem } from "@/types";
+import { Icon } from "@/components/icon";
+const menuList: IMenuItem[] = [
 	{
-		title: "企业管理",
+		title: "Company Management",
 		path: "/manage",
+		icon: Icon.companyManagement,
 	},
 	{
-		title: "监管处罚",
+		title: "Supervision & Punishment",
 		path: "/manage/supervise-page",
+		icon: Icon.supervision_punishment,
 	},
 ];
 
