@@ -17,6 +17,7 @@ import {
 	getAuctionList,
 	useGetBidList,
 	useGetTradeList,
+	useGetMyParticipation,
 } from "@/utils/react-query/userApi";
 import useStore from "@/store";
 import { ComingSoon } from "@/components/ComingSoon";
@@ -42,7 +43,7 @@ const BidData = [
 const TradingMarket = () => {
 	const { addressConnect } = useStore();
 	const { data: tradeList } = useGetTradeList();
-
+	const { data: myTradeList } = useGetMyParticipation(addressConnect);
 	const [showDialog, setShowDialog] = useState(false);
 	const handleChange = (value: boolean) => {
 		setShowDialog(value);
@@ -74,8 +75,8 @@ const TradingMarket = () => {
 				<TabsContent value="track" className="flex-[1]">
 					<div className="flex flex-wrap gap-4">
 						{/* <ComingSoon /> */}
-						{tradeList &&
-							tradeList.data.map((item, index) => {
+						{myTradeList &&
+							myTradeList.data.map((item, index) => {
 								return (
 									<TrackingCard
 										key={index}
