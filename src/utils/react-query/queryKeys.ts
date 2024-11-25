@@ -15,6 +15,8 @@ export enum QUERY_KEYS {
 	// TRADE KEYS
 	GET_TRADE_LIST = "getTradeList",
 	GET_TRADE_DETAILS = "getTradeDetails",
+	GET_MY_TRADE = "getMyTrade",
+	GET_MY_PARTICIPATION = "getMyParticipation",
 }
 
 export enum QUERY_PATHS {
@@ -43,6 +45,8 @@ export enum QUERY_PATHS {
 	TRADE_LIST_PATH = "/api/trade/list",
 	TRADE_DETAIL_PATH = "/api/trade",
 	TRADE_UPDATE_PATH = "/api/trade/update-trade",
+	MY_TRADE_PATH = "/api/trade/list/key",
+	MY_PARTICIPATION_PATH = "/api/trade/list/buyer",
 
 	//报告
 	SUBMIT_REPORT_PATH = "/api/report/submit-report",

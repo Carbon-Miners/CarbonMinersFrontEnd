@@ -33,7 +33,7 @@ import { calcTime } from "@/utils";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 interface IProps {
-	close: (value: boolean) => void;
+	close: () => void;
 }
 
 const formSchema = z.object({
@@ -55,7 +55,7 @@ const formSchema = z.object({
 	}),
 });
 
-const AuctionForm = ({ close: clsoseDialog }: IProps) => {
+const AuctionForm = ({ close: handleClose }: IProps) => {
 	const { addressConnect } = useStore();
 	const { toast } = useToast();
 	const { mutateAsync: startAuction } = useStartAuction();
@@ -99,7 +99,7 @@ const AuctionForm = ({ close: clsoseDialog }: IProps) => {
 		const auctionRes = await startAuction(combineData);
 		if (auctionRes) {
 			setIsLoading(false);
-			clsoseDialog(false);
+			handleClose();
 			toast({
 				description: "Your auction has been posted!",
 			});

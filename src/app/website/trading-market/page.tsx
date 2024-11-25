@@ -9,9 +9,9 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import AuctionForm from "@/components/TradingMarket/AuctionForm";
-import ListCard from "@/components/TradingMarket/ListCard";
-import BidCard from "@/components/TradingMarket/BidCard";
+import AuctionForm from "@/components/AuctionAndTradeMarket/AuctionForm";
+import ListCard from "@/components/AuctionAndTradeMarket/ListCard";
+import BidCard from "@/components/AuctionAndTradeMarket/BidCard";
 import {
 	useGetAuctionList,
 	getAuctionList,
@@ -19,6 +19,10 @@ import {
 	useGetTradeList,
 } from "@/utils/react-query/userApi";
 import useStore from "@/store";
+import { ComingSoon } from "@/components/ComingSoon";
+import MyTrade from "@/components/AuctionAndTradeMarket/MyTrade";
+import { AuctionRsp, TradeRsp } from "@/types";
+import TrackingCard from "@/components/AuctionAndTradeMarket/TrackingCard";
 
 const BidData = [
 	{
@@ -38,7 +42,6 @@ const BidData = [
 const TradingMarket = () => {
 	const { addressConnect } = useStore();
 	const { data: tradeList } = useGetTradeList();
-	const { data: bidList } = useGetBidList(addressConnect);
 
 	const [showDialog, setShowDialog] = useState(false);
 	const handleChange = (value: boolean) => {
@@ -50,7 +53,7 @@ const TradingMarket = () => {
 			<Tabs defaultValue="market" className="w-full h-full flex flex-col">
 				<TabsList className="grid w-[390px] grid-cols-3">
 					<TabsTrigger value="market">Trading Market</TabsTrigger>
-					<TabsTrigger value="bid">Trade Tracking</TabsTrigger>
+					<TabsTrigger value="track">Trade Tracking</TabsTrigger>
 					<TabsTrigger value="mine">My Trading</TabsTrigger>
 				</TabsList>
 				<TabsContent value="market" className="flex-[1]">
@@ -60,23 +63,24 @@ const TradingMarket = () => {
 								return (
 									<ListCard
 										key={index}
-										cardInfo={item}
-										menu="trade-market"
+										cardInfo={item as AuctionRsp & TradeRsp}
+										menu="trading-market"
 										index={index}
 									/>
 								);
 							})}
 					</div>
 				</TabsContent>
-				<TabsContent value="bid" className="flex-[1]">
+				<TabsContent value="track" className="flex-[1]">
 					<div className="flex flex-wrap gap-4">
-						{bidList &&
-							bidList.data.map((item, index) => {
+						{/* <ComingSoon /> */}
+						{tradeList &&
+							tradeList.data.map((item, index) => {
 								return (
-									<BidCard
+									<TrackingCard
 										key={index}
-										bidInfo={item}
-										menu="trade-market"
+										cardInfo={item as AuctionRsp & TradeRsp}
+										menu="trading-market"
 										index={index}
 									/>
 								);
@@ -84,24 +88,11 @@ const TradingMarket = () => {
 					</div>
 				</TabsContent>
 				<TabsContent value="mine" className="flex-[1]">
-					我的项目
+					<div className="flex flex-wrap m-5">
+						<MyTrade />
+					</div>
 				</TabsContent>
 			</Tabs>
-			<div className="absolute right-5 top-1">
-				<Dialog open={showDialog} onOpenChange={handleChange}>
-					<DialogTrigger asChild>
-						<div className="px-3 py-1 rounded-[14px] bg-[--button-bg] text-[--basic-text] flex justify-center items-center font-bold cursor-pointer">
-							创建项目
-						</div>
-					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>Start Auction</DialogTitle>
-						</DialogHeader>
-						<AuctionForm close={setShowDialog} />
-					</DialogContent>
-				</Dialog>
-			</div>
 		</div>
 	);
 };

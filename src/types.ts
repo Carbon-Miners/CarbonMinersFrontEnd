@@ -83,6 +83,19 @@ export type AuctionRsp = {
 	transactionHash: string;
 };
 
+export type TradeRsp = {
+	TradeID: string;
+	Amount: string;
+	Buyer: string;
+	CreateTime: string;
+	ID: number;
+	PriceOfUnit: string;
+	Seller: string;
+	Status: string;
+	TransactionHash: string;
+	UpdateTime: string;
+};
+
 // export type BidRsp = {
 //   id: string;
 //   buyer: string;

@@ -16,14 +16,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
-import AuctionForm from "../TradingMarket/AuctionForm";
+import AuctionForm from "./AuctionForm";
 
 export function MyAuction() {
 	const addressConnect = useStore((state) => state.addressConnect);
-	const { data: myAuctionList } = useGetMyAuction(addressConnect);
+	const { data: myAuctionList, refetch } = useGetMyAuction(addressConnect);
 	const [showDialog, setShowDialog] = useState(false);
 	const handleChange = (value: boolean) => {
 		setShowDialog(value);
+	};
+	const handleTradeFormClose = () => {
+		setShowDialog(false);
+		refetch();
 	};
 
 	return (
@@ -41,7 +45,7 @@ export function MyAuction() {
 						<DialogHeader>
 							<DialogTitle>My Auction</DialogTitle>
 						</DialogHeader>
-						<AuctionForm close={setShowDialog} />
+						<AuctionForm close={handleTradeFormClose} />
 					</DialogContent>
 				</Dialog>
 			</div>

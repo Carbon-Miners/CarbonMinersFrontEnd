@@ -13,7 +13,7 @@ import {
 	IBidCard,
 	ICompanyReport,
 	IQueryResponse,
-	ITradeStart,
+	TradeRsp,
 } from "@/types";
 
 /**
@@ -243,7 +243,7 @@ export const useGetPenaltyInfo = (
  * 交易相关接口-----------------------
  */
 // 开始交易
-const startTrade = (url: string, data: ITradeStart) => {
+const startTrade = (url: string, data: any) => {
 	return post(url, {
 		data,
 	});
@@ -252,8 +252,7 @@ const startTrade = (url: string, data: ITradeStart) => {
 export const useStartTrade = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: ITradeStart) =>
-			startTrade(QUERY_PATHS.TRADE_START_PATH, data),
+		mutationFn: (data: any) => startTrade(QUERY_PATHS.TRADE_START_PATH, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: [QUERY_KEYS.GET_AUCTION_LIST],
@@ -264,7 +263,6 @@ export const useStartTrade = () => {
 
 // 获取交易列表
 const getTradeList = (url: string) => {
-	console.log(QUERY_PATHS.TRADE_LIST_PATH);
 	return get(url);
 };
 export const useGetTradeList = (): UseQueryResult<
@@ -286,7 +284,7 @@ const getTradeDetail = (url: string, tradeID: string) => {
 
 export const useGetTradeDetail = (
 	tradeID: string
-): UseQueryResult<IQueryResponse<AuctionRsp>, Error> => {
+): UseQueryResult<IQueryResponse<TradeRsp>, Error> => {
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_TRADE_DETAILS],
 		queryFn: () => getTradeDetail(QUERY_PATHS.TRADE_DETAIL_PATH, tradeID),
@@ -302,5 +300,36 @@ const tradeUpdate = (url: string, data: any) => {
 export const useTradeUpdate = () => {
 	return useMutation({
 		mutationFn: (data: any) => tradeUpdate(QUERY_PATHS.TRADE_UPDATE_PATH, data),
+	});
+};
+
+// 我的交易
+const getMyTrade = (url: string, publicKey: string) => {
+	return get(url, {
+		params: { publicKey },
+	});
+};
+export const useGetMyTrade = (
+	publicKey: string
+): UseQueryResult<IQueryResponse<any[]>, Error> => {
+	return useQuery({
+		queryKey: [QUERY_KEYS.GET_MY_TRADE],
+		queryFn: () => getMyTrade(QUERY_PATHS.MY_TRADE_PATH, publicKey),
+	});
+};
+
+// 我参与的交易
+const getMyParticipation = (url: string, publicKey: string) => {
+	return get(url, {
+		params: { publicKey },
+	});
+};
+export const useGetMyParticipation = (
+	publicKey: string
+): UseQueryResult<IQueryResponse<any[]>, Error> => {
+	return useQuery({
+		queryKey: [QUERY_KEYS.GET_MY_PARTICIPATION],
+		queryFn: () =>
+			getMyParticipation(QUERY_PATHS.MY_PARTICIPATION_PATH, publicKey),
 	});
 };

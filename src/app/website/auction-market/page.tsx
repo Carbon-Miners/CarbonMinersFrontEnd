@@ -1,11 +1,11 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ListCard from "@/components/TradingMarket/ListCard";
-import BidCard from "@/components/TradingMarket/BidCard";
+import ListCard from "@/components/AuctionAndTradeMarket/ListCard";
+import BidCard from "@/components/AuctionAndTradeMarket/BidCard";
 import { useGetAuctionList, useGetBidList } from "@/utils/react-query/userApi";
 import useStore from "@/store";
-import MyAuction from "@/components/MyAuction/page";
+import MyAuction from "@/components/AuctionAndTradeMarket/MyAuction";
 import { EmptyPage } from "@/components/EmptyPage";
 // import { mockBidList } from "@/lib/mockData";
 

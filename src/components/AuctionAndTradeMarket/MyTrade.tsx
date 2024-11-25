@@ -1,13 +1,8 @@
 import useStore from "@/store";
 import { Button } from "../ui/button";
-import {
-	useGetAuctionList,
-	useGetMyAuction,
-} from "@/utils/react-query/userApi";
+import { useGetMyTrade } from "@/utils/react-query/userApi";
 import { calcTime } from "@/utils";
-import { Icon } from "../icon";
 import { useEffect, useState } from "react";
-import { AuctionRsp } from "@/types";
 import { EmptyPage } from "../EmptyPage";
 import {
 	Dialog,
@@ -16,73 +11,83 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
-import AuctionForm from "../TradingMarket/AuctionForm";
+import TradeForm from "./TradeForm";
 
 export function MyTrade() {
 	const addressConnect = useStore((state) => state.addressConnect);
-	const { data: myAuctionList } = useGetMyAuction(addressConnect);
+	const { data: myTradeList, refetch } = useGetMyTrade(addressConnect);
 	const [showDialog, setShowDialog] = useState(false);
+
 	const handleChange = (value: boolean) => {
 		setShowDialog(value);
+	};
+
+	const handleTradeFormClose = () => {
+		setShowDialog(false);
+		refetch();
 	};
 
 	return (
 		<div className="w-full h-full">
 			<div className="flex items-center justify-between">
-				<h1 className="text-2xl">My Auctions</h1>
+				<h1 className="text-2xl">My Trading</h1>
 
 				<Dialog open={showDialog} onOpenChange={handleChange}>
 					<DialogTrigger asChild>
 						<Button className="bg-[--button-bg] text-[--basic-text]">
-							Create Auction
+							Create Trading
 						</Button>
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
-							<DialogTitle>My Auction</DialogTitle>
+							<DialogTitle>My Trading</DialogTitle>
 						</DialogHeader>
-						<AuctionForm close={setShowDialog} />
+						<TradeForm close={handleTradeFormClose} />
 					</DialogContent>
 				</Dialog>
 			</div>
-			<div className="flex flex-wrap h-[calc(100vh-220px)] gap-4 mt-5 text-[--secondry-text] text-sm overflow-y-auto">
-				{myAuctionList && myAuctionList.data.length ? (
-					myAuctionList.data.map((item, index) => {
+			<div className="flex flex-col justify-start h-[calc(100vh-220px)] gap-4 mt-5 text-[--secondry-text] text-sm overflow-y-auto">
+				{myTradeList && myTradeList.data.length ? (
+					myTradeList.data.map((item, index) => {
 						return (
 							<div className="w-full p-5 grid grid-cols-2 gap-2 bg-[#242731] opacity-200 rounded-lg">
 								<div className="flex flex-col justify-between">
-									<span className="text-[#E0E4E7] text-lg mb-2">
-										Sell Amount
-									</span>
-									<span>{item?.sellAmount}</span>
+									<span className="text-[#E0E4E7] text-lg mb-2">Amount</span>
+									<span>{item?.Amount}</span>
 								</div>
 								<div className="flex flex-col justify-between">
 									<span className="text-[#E0E4E7] text-lg mb-2">
-										Min Bid Amount
+										Price of Unit
 									</span>
-									<span>{item?.minimumBidAmount}</span>
+									<span>{item?.PriceOfUnit}</span>
+								</div>
+								<div className="flex flex-col justify-between">
+									<span className="text-[#E0E4E7] text-lg mb-2">Status</span>
+									<span>
+										{item?.Status === "1"
+											? "Normal"
+											: item?.Status === "2"
+											? "Finished"
+											: "Take Down"}
+									</span>
 								</div>
 								<div className="flex flex-col justify-between">
 									<span className="text-[#E0E4E7] text-lg mb-2">
-										Init Price Unit
+										Create Time
 									</span>
-									<span>{item?.initPriceUnit}</span>
+									<span>{calcTime(item?.CreateTime)}</span>
 								</div>
 								<div className="flex flex-col justify-between">
 									<span className="text-[#E0E4E7] text-lg mb-2">
-										Start Time
+										Update Time
 									</span>
-									<span>{calcTime(item?.startTime)}</span>
-								</div>
-								<div className="flex flex-col justify-between">
-									<span className="text-[#E0E4E7] text-lg mb-2">End Time</span>
-									<span>{calcTime(item?.endTime)}</span>
+									<span>{calcTime(item?.UpdateTime)}</span>
 								</div>
 								<div className="flex flex-col justify-between">
 									<span className="text-[#E0E4E7] text-lg mb-2">
 										Transaction Hash
 									</span>
-									<span>{item?.transactionHash}</span>
+									<span>{item?.TransactionHash}</span>
 								</div>
 							</div>
 						);
