@@ -83,21 +83,21 @@ const TrackingCard = ({ cardInfo, menu, index }: IProps) => {
 		);
 	};
 
-	const calcTradStatus = (status: string) => {
+	const calcTradStatus = (status: number) => {
 		return (
 			<div
 				className={cn(
 					`${
-						status === "1"
+						status === 1
 							? "bg-[#A162F7] bg-opacity-300"
-							: status === "2"
+							: status === 2
 							? "bg-[#FF6370] bg-opacity-300"
 							: "bg-[#A4A5A6] bg-opacity-300"
 					}`,
 					"rounded-xl px-2 py-1 font-bold"
 				)}
 			>
-				{status === "1" ? "Normal" : status === "2" ? "Finished" : "Take Down"}
+				{status === 1 ? "Normal" : status === 2 ? "Finished" : "Take Down"}
 			</div>
 		);
 	};

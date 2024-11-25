@@ -91,7 +91,7 @@ export type TradeRsp = {
 	ID: number;
 	PriceOfUnit: string;
 	Seller: string;
-	Status: string;
+	Status: number;
 	TransactionHash: string;
 	UpdateTime: string;
 };
