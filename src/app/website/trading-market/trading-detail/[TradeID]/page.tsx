@@ -81,7 +81,7 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 						description: "Approved successfully!",
 					});
 					setIsLoading(false);
-					router.back();
+					// router.back();
 				}
 			},
 			onError: (error) => {
@@ -249,7 +249,7 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 					className="w-1/3 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]"
 					onClick={approveToken}
 				>
-					{isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+					{/* {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
 					Approve
 				</Button>
 				<Button
