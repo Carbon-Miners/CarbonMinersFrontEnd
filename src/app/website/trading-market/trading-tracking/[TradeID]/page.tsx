@@ -169,9 +169,9 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 							<div className="flex flex-col justify-between">
 								<span className="text-[#FFFFFF] text-xl mb-2">Status:</span>
 								<span>
-									{tradeInfo?.Status === "1"
+									{String(tradeInfo?.Status) === "1"
 										? "Normal"
-										: tradeInfo?.Status === "2"
+										: String(tradeInfo?.Status) === "2"
 										? "Finished"
 										: "Take Down"}
 								</span>

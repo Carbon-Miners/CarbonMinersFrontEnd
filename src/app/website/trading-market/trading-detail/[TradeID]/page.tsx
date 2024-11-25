@@ -15,7 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 
-import { useBidSubmit, useGetTradeDetail } from "@/utils/react-query/userApi";
+import {
+	useBidSubmit,
+	useGetMyParticipation,
+	useGetTradeDetail,
+	useGetTradeList,
+	useTradeUpdate,
+} from "@/utils/react-query/userApi";
 import { type BaseError, useReadContracts, useWriteContract } from "wagmi";
 import { carbonTraderAbi } from "~/carbonTrader";
 import { carbonTraderAddress, erc20Address } from "@/config";
@@ -48,11 +54,15 @@ const formSchema = z.object({
 
 const TradingDetail = ({ params: { TradeID = "" } }) => {
 	const { toast } = useToast();
-	const [isLoading, setIsLoading] = useState(false);
+	const [isApproveLoading, setIsApproveLoading] = useState(false);
+	const [isDealLoading, setIsDealLoading] = useState(false);
 	const [tradeInfo, setTradeInfo] = useState<TradeRsp>();
 	// const [balance, setBalance] = useState<string[]>();
 	const { addressConnect } = useStore();
-	const { mutateAsync: startBid } = useBidSubmit();
+	const { mutateAsync: tradeUpdate } = useTradeUpdate();
+	const { refetch: refetchTradeList } = useGetTradeList();
+	const { refetch: refetchMyParticipation } =
+		useGetMyParticipation(addressConnect);
 	const result = useReadContracts({
 		contracts: [
 			{
@@ -70,7 +80,7 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 		],
 	});
 
-	const { writeContract } = useWriteContract({
+	const { writeContract: approve } = useWriteContract({
 		mutation: {
 			onSuccess: async (hash, variables) => {
 				const listReceipt = await waitForTransactionReceipt(wagmiConfig, {
@@ -80,7 +90,7 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 					toast({
 						description: "Approved successfully!",
 					});
-					setIsLoading(false);
+					setIsApproveLoading(false);
 					// router.back();
 				}
 			},
@@ -89,7 +99,42 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 					description:
 						"Error: " + ((error as BaseError).shortMessage || error.message),
 				});
-				setIsLoading(false);
+				setIsApproveLoading(false);
+			},
+		},
+	});
+
+	const { writeContract: makeDeal } = useWriteContract({
+		mutation: {
+			onSuccess: async (hash, variables) => {
+				const listReceipt = await waitForTransactionReceipt(wagmiConfig, {
+					hash,
+				});
+				if (listReceipt.status === "success") {
+					toast({
+						description: "Approved successfully!",
+					});
+					setIsDealLoading(false);
+					await tradeUpdate({
+						tradeID: TradeID,
+						buyer: addressConnect,
+						amount: tradeInfo?.Amount,
+						priceOfUint: tradeInfo?.PriceOfUnit,
+						hash: hash,
+						status: 2,
+					});
+					await refetchTradeList();
+					await refetchMyParticipation();
+					router.back();
+				}
+			},
+			onError: (error) => {
+				console.error(error);
+				toast({
+					description:
+						"Error: " + ((error as BaseError).shortMessage || error.message),
+				});
+				setIsDealLoading(false);
 			},
 		},
 	});
@@ -119,7 +164,8 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 	});
 	// approve method
 	const approveToken = () => {
-		writeContract({
+		setIsApproveLoading(true);
+		approve({
 			abi: erc20Abi,
 			address: erc20Address,
 			functionName: "approve",
@@ -128,8 +174,8 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 	};
 
 	function makeADeal() {
-		setIsLoading(true);
-		writeContract({
+		setIsDealLoading(true);
+		makeDeal({
 			abi: carbonTraderAbi,
 			address: carbonTraderAddress,
 			functionName: "makeADeal",
@@ -169,9 +215,9 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 							<div className="flex flex-col justify-between">
 								<span className="text-[#FFFFFF] text-xl mb-2">Status:</span>
 								<span>
-									{tradeInfo?.Status === "1"
+									{String(tradeInfo?.Status) === "1"
 										? "Normal"
-										: tradeInfo?.Status === "2"
+										: String(tradeInfo?.Status) === "2"
 										? "Finished"
 										: "Take Down"}
 								</span>
@@ -249,14 +295,16 @@ const TradingDetail = ({ params: { TradeID = "" } }) => {
 					className="w-1/3 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]"
 					onClick={approveToken}
 				>
-					{/* {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
+					{isApproveLoading && (
+						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					)}
 					Approve
 				</Button>
 				<Button
 					className="w-1/3 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]"
 					onClick={makeADeal}
 				>
-					{/* {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
+					{isDealLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 					Make A Deal
 				</Button>
 			</div>

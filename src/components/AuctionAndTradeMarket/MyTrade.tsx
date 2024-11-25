@@ -1,6 +1,6 @@
 import useStore from "@/store";
 import { Button } from "../ui/button";
-import { useGetMyTrade } from "@/utils/react-query/userApi";
+import { useGetMyTrade, useGetTradeList } from "@/utils/react-query/userApi";
 import { calcTime } from "@/utils";
 import { useEffect, useState } from "react";
 import { EmptyPage } from "../EmptyPage";
@@ -16,6 +16,8 @@ import TradeForm from "./TradeForm";
 export function MyTrade() {
 	const addressConnect = useStore((state) => state.addressConnect);
 	const { data: myTradeList, refetch } = useGetMyTrade(addressConnect);
+	const { refetch: refetchTradeList } = useGetTradeList();
+
 	const [showDialog, setShowDialog] = useState(false);
 
 	const handleChange = (value: boolean) => {
@@ -25,6 +27,7 @@ export function MyTrade() {
 	const handleTradeFormClose = () => {
 		setShowDialog(false);
 		refetch();
+		refetchTradeList();
 	};
 
 	return (
@@ -64,9 +67,9 @@ export function MyTrade() {
 								<div className="flex flex-col justify-between">
 									<span className="text-[#E0E4E7] text-lg mb-2">Status</span>
 									<span>
-										{item?.Status === "1"
+										{item?.Status === 1
 											? "Normal"
-											: item?.Status === "2"
+											: item?.Status === 2
 											? "Finished"
 											: "Take Down"}
 									</span>
