@@ -47,7 +47,7 @@ const DialogBtn = () => {
 
         <div className="flex justify-center items-center gap-2">
           <div className="w-28 h-[1px] opacity-80 bg-gradient-to-l from-[#ddd] to-[rgba(98, 98, 102, 0)]"></div>
-          <span className="">登录类型</span>
+          <span className="">LOGIN TYPE</span>
           <div className="w-28 h-[1px] opacity-80 bg-gradient-to-r from-[#ddd] to-[rgba(98, 98, 102, 0)]"></div>
         </div>
 
@@ -60,16 +60,16 @@ const DialogBtn = () => {
           className="mb-3"
         >
           <ToggleGroupItem value="company">
-            企业
+            COMPANY
           </ToggleGroupItem>
           <ToggleGroupItem value="government">
-            政府
+            GOVERNMENT
           </ToggleGroupItem>
         </ToggleGroup>
 
         <div className="flex justify-center items-center gap-2">
           <div className="w-28 h-[1px] opacity-80 bg-gradient-to-l from-[#ddd] to-[rgba(98, 98, 102, 0)]"></div>
-          <span className="">链接钱包</span>
+          <span className="">CONNECT WALLET</span>
           <div className="w-28 h-[1px] opacity-80 bg-gradient-to-r from-[#ddd] to-[rgba(98, 98, 102, 0)]"></div>
         </div>
 
