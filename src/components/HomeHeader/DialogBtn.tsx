@@ -39,14 +39,14 @@ const DialogBtn = () => {
       <DialogTrigger asChild>
         <div className='h-[40px] px-4 rounded-[16px] bg-[--button-bg] text-[--basic-text] flex justify-center items-center font-bold cursor-pointer'>CONNECT</div>
       </DialogTrigger>
-      <DialogContent className='border-[--card-bg] w-[380px]'>
+      <DialogContent className='border-[--card-bg]'>
         <DialogHeader>
           <DialogTitle className='text-[--basic-text] mb-4'>Login</DialogTitle>
         </DialogHeader>
 
         <div className="flex justify-center items-center gap-2">
           <div className="w-28 h-[1px] opacity-80 bg-gradient-to-l from-[#ddd] to-[rgba(98, 98, 102, 0)]"></div>
-          <span className="">登录类型</span>
+          <span className="whitespace-nowrap">LOGIN TYPE</span>
           <div className="w-28 h-[1px] opacity-80 bg-gradient-to-r from-[#ddd] to-[rgba(98, 98, 102, 0)]"></div>
         </div>
 
@@ -59,16 +59,16 @@ const DialogBtn = () => {
           className="mb-3"
         >
           <ToggleGroupItem value="company">
-            企业
+            COMPANY
           </ToggleGroupItem>
           <ToggleGroupItem value="government">
-            政府
+            GOVERNMENT
           </ToggleGroupItem>
         </ToggleGroup>
 
         <div className="flex justify-center items-center gap-2">
           <div className="w-28 h-[1px] opacity-80 bg-gradient-to-l from-[#ddd] to-[rgba(98, 98, 102, 0)]"></div>
-          <span className="">链接钱包</span>
+          <span className="whitespace-nowrap">CONNECT WALLET</span>
           <div className="w-28 h-[1px] opacity-80 bg-gradient-to-r from-[#ddd] to-[rgba(98, 98, 102, 0)]"></div>
         </div>
 
