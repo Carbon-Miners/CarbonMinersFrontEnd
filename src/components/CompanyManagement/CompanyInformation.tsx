@@ -162,19 +162,19 @@ const CompanyInformation = () => {
 					</div>
 					<div className="flex flex-col justify-between">
 						<span className="text-[#E0E4E7] text-lg mb-2">Allowance</span>
-						<span>{balance && balance[0].toString()}</span>
+						<span>{balance && balance?.[0]?.toString()}</span>
 					</div>
 					<div className="flex flex-col justify-between">
 						<span className="text-[#E0E4E7] text-lg mb-2">
 							Frozen Allowance
 						</span>
-						<span>{balance && balance[1].toString()}</span>
+						<span>{balance && balance?.[1]?.toString()}</span>
 					</div>
 					<div className="flex flex-col justify-between">
 						<span className="text-[#E0E4E7] text-lg mb-2">
 							Balance Of Token
 						</span>
-						<span>{balance && formatEther(balance[2])}</span>
+						<span>{balance && formatEther(balance?.[2])}</span>
 					</div>
 				</div>
 			</div>

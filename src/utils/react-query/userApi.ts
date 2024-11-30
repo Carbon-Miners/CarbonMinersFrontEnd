@@ -56,6 +56,7 @@ export const useGetCompanyInfo = (
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_COMPANY_INFO, publicKey],
 		queryFn: () => getCompanyInfo(QUERY_PATHS.COMPANY_INFO_PATH, publicKey),
+		enabled: !!publicKey, // 只有在 publicKey 有值时才启用查询
 	});
 };
 
@@ -167,6 +168,7 @@ export const useGetBidList = (
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_BID_LIST],
 		queryFn: () => getBidList(QUERY_PATHS.BID_LIST_PATH, publicKey),
+		enabled: !!publicKey, // 只有在 publicKey 有值时才启用查询
 	});
 };
 // 竞拍详情
@@ -182,6 +184,7 @@ export const useGetBidDetails = (
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_BID_DETAILS],
 		queryFn: () => getBidDetails(QUERY_PATHS.BID_DETAILS_PATH, biddingID),
+		enabled: !!biddingID, // 只有在 publicKey 有值时才启用查询
 	});
 };
 
@@ -198,8 +201,9 @@ export const useGetReportInfo = (
 	publicKey: string
 ): UseQueryResult<IQueryResponse<ICompanyReport>, Error> => {
 	return useQuery({
-		queryKey: [QUERY_KEYS.GET_REPORT_INFO],
+		queryKey: [QUERY_KEYS.GET_REPORT_INFO, publicKey],
 		queryFn: () => getReportInfo(QUERY_PATHS.REPORT_INFO_PATH, publicKey),
+		enabled: !!publicKey, // 只有在 publicKey 有值时才启用查询
 	});
 };
 // 提交报告
@@ -236,6 +240,7 @@ export const useGetPenaltyInfo = (
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_REPORT_INFO],
 		queryFn: () => getPenaltyInfo(QUERY_PATHS.PUNISH_INFO_PATH, address),
+		enabled: !!address, // 只有在 address 有值时才启用查询
 	});
 };
 
@@ -288,6 +293,7 @@ export const useGetTradeDetail = (
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_TRADE_DETAILS],
 		queryFn: () => getTradeDetail(QUERY_PATHS.TRADE_DETAIL_PATH, tradeID),
+		enabled: !!tradeID, // 只有在 tradeID 有值时才启用查询
 	});
 };
 
@@ -315,6 +321,7 @@ export const useGetMyTrade = (
 	return useQuery({
 		queryKey: [QUERY_KEYS.GET_MY_TRADE],
 		queryFn: () => getMyTrade(QUERY_PATHS.MY_TRADE_PATH, publicKey),
+		enabled: !!publicKey, // 只有在 publicKey 有值时才启用查询
 	});
 };
 
@@ -331,5 +338,6 @@ export const useGetMyParticipation = (
 		queryKey: [QUERY_KEYS.GET_MY_PARTICIPATION],
 		queryFn: () =>
 			getMyParticipation(QUERY_PATHS.MY_PARTICIPATION_PATH, publicKey),
+		enabled: !!publicKey, // 只有在 publicKey 有值时才启用查询
 	});
 };
