@@ -86,7 +86,6 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 						toast({
 							description: "Approved successfully!",
 						});
-						router.back();
 					}
 				},
 				onError: (error) => {
@@ -109,6 +108,7 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 						//   description: "Deposited successfully!",
 						// });
 						submitBid(hash);
+						router.back();
 					}
 				},
 				onError: (error) => {
