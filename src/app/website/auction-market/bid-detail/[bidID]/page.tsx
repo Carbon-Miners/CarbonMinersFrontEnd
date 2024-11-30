@@ -117,7 +117,6 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 							"Error: " + ((error as BaseError).shortMessage || error.message),
 					});
 					setDepositLoading(false);
-					router.push("/website/auction-market");
 				},
 			},
 		});
@@ -198,6 +197,7 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 			toast({
 				description: "finalize successfully!",
 			});
+			router.push("/website/auction-market");
 		}
 	};
 
