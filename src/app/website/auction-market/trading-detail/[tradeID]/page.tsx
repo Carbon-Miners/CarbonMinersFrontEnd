@@ -13,7 +13,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+// import { Card, CardContent } from "@/components/ui/card";
 
 import { useBidSubmit, useGetAuctionDetail } from "@/utils/react-query/userApi";
 import { type BaseError, useReadContracts, useWriteContract } from "wagmi";
@@ -32,6 +32,7 @@ import { formatEther, parseEther } from "viem";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/icon";
+import { set } from "date-fns";
 
 const formSchema = z.object({
 	allowance: z.string({
@@ -53,7 +54,8 @@ const formSchema = z.object({
 
 const TradingDetail = ({ params: { tradeID = "" } }) => {
 	const { toast } = useToast();
-	// const [isLoading, setIsLoading] = useState(false);
+	const [isApproveLoading, setIsApproveLoading] = useState(false);
+	const [isDepositLoading, setIsDepositLoading] = useState(false);
 	const [auctionInfo, setAuctionInfo] = useState<AuctionRsp>();
 	// const [balance, setBalance] = useState<string[]>();
 	const { addressConnect } = useStore();
@@ -83,6 +85,7 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 						hash,
 					});
 					if (listReceipt.status === "success") {
+						setIsApproveLoading(false);
 						toast({
 							description: "Approved successfully!",
 						});
@@ -145,6 +148,7 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 	});
 	// approve method
 	const approveToken = () => {
+		setIsApproveLoading(true);
 		approve({
 			abi: erc20Abi,
 			address: erc20Address,
@@ -154,6 +158,7 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 	};
 	// deposit method
 	const depositToken = async () => {
+		setIsDepositLoading(true);
 		const getFormValues = form.getValues();
 		const params = {
 			publicKey: addressConnect!,
@@ -195,6 +200,7 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 			biddingMsg: encryptInfo,
 		});
 		if (result) {
+			setIsDepositLoading(false);
 			toast({
 				description: "Deposited and Bid successfully!",
 			});
@@ -365,12 +371,18 @@ const TradingDetail = ({ params: { tradeID = "" } }) => {
 					className="w-1/3 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]"
 					onClick={approveToken}
 				>
+					{
+						isApproveLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					}
 					Approve
 				</Button>
 				<Button
 					className="w-1/3 bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]"
 					onClick={depositToken}
 				>
+					{
+						isDepositLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					}
 					Deposit
 				</Button>
 			</div>

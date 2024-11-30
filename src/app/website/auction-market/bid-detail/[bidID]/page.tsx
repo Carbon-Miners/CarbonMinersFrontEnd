@@ -32,10 +32,10 @@ import { carbonTraderAddress, erc20Address } from "@/config";
 import { Loader2 } from "lucide-react";
 import { erc20Abi } from "~/erc20";
 import { parseEther } from "viem";
-import { readContract } from "@wagmi/core";
+// import { readContract } from "@wagmi/core";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/icon";
-import { mockAuctionDetail, mockBidList } from "@/lib/mockData";
+// import { mockAuctionDetail, mockBidList } from "@/lib/mockData";
 
 const formSchema = z.object({
 	bidPassword: z.string({
@@ -45,6 +45,9 @@ const formSchema = z.object({
 
 const BidDetails = ({ params: { bidID = "" } }) => {
 	const router = useRouter();
+	const [openLoading, setOpenLoading] = useState(false);
+	const [approveLoading, setApproveLoading] = useState(false);
+	const [depositLoading, setDepositLoading] = useState(false);
 	const [bidId, auctionId] = bidID.split("-");
 	const { toast } = useToast();
 	const { mutateAsync: bidUpdate } = useBidUpdate();
@@ -56,6 +59,7 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
+
 	const { writeContract: setBidSecret, isSuccess } = useWriteContract({
 		mutation: {
 			onSuccess: async (hash, variables) => {
@@ -63,9 +67,6 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 					hash,
 				});
 				if (listReceipt.status === "success") {
-					toast({
-						description: "Deposited successfully!",
-					});
 					submitBidSecret(hash);
 				}
 			},
@@ -88,6 +89,7 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 						toast({
 							description: "Approved successfully!",
 						});
+						setApproveLoading(false);
 					}
 				},
 				onError: (error) => {
@@ -114,6 +116,8 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 						description:
 							"Error: " + ((error as BaseError).shortMessage || error.message),
 					});
+					setDepositLoading(false);
+					router.push("/website/auction-market");
 				},
 			},
 		});
@@ -124,18 +128,16 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 	useEffect(() => {
 		if (bidData) {
 			setBidDetail(bidData.data);
-			// setBidDetail(mockBidList.data?.[0]);
 		}
 	}, [bidData]);
 	useEffect(() => {
 		if (auctionData) {
 			setAuctionDetail(auctionData.data);
-			// setAuctionDetail(mockAuctionDetail);
 		}
 	}, [auctionData]);
 
 	const openBid = (data: z.infer<typeof formSchema>) => {
-		// const getFormValues = form.getValues();
+		setOpenLoading(true);
 		setBidSecret({
 			abi: carbonTraderAbi,
 			address: carbonTraderAddress,
@@ -153,6 +155,7 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 			status: "2",
 		});
 		if (res) {
+			setOpenLoading(false);
 			toast({
 				description: "Bid open successfully!",
 			});
@@ -160,6 +163,7 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 	};
 
 	const approveToken = async () => {
+		setApproveLoading(true);
 		approve({
 			abi: erc20Abi,
 			address: erc20Address,
@@ -172,13 +176,13 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 	};
 
 	const finalizeAuction = () => {
+		setDepositLoading(true);
 		finalize({
 			abi: carbonTraderAbi,
 			address: carbonTraderAddress,
 			functionName: "finalizeAuctionAndTransferCarbon",
 			args: [
 				BigInt(bidDetail.auctionID),
-				BigInt(bidDetail.allocateAmount),
 				parseEther(String(bidDetail.additionalAmountToPay)),
 			],
 		});
@@ -238,9 +242,9 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 									type="submit"
 									className="bg-[--button-bg] text-[--basic-text] hover:bg-[--button-bg]"
 								>
-									{/* {
-                    isSuccess && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  } */}
+									{
+										openLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									}
 									Open Bid
 								</Button>
 							</div>
@@ -270,12 +274,18 @@ const BidDetails = ({ params: { bidID = "" } }) => {
 								className="cursor-pointer px-4 h-[40px] flex justify-center items-center bg-[--button-bg] text-center rounded-lg text-[--basic-text]"
 								onClick={approveToken}
 							>
+								{
+									approveLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								}
 								Approve
 							</div>
 							<div
 								className="cursor-pointer px-4 h-[40px] flex justify-center items-center py-1 bg-[--button-bg] text-center rounded-lg text-[--basic-text]"
 								onClick={finalizeAuction}
 							>
+								{
+									depositLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								}
 								Finalize Auction
 							</div>
 						</div>

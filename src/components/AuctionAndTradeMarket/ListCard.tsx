@@ -64,10 +64,9 @@ const ListCard = ({ cardInfo, menu, index }: IProps) => {
 		return (
 			<div
 				className={cn(
-					`${
-						status.trading
-							? "bg-[#A162F7] bg-opacity-300"
-							: status.notStart
+					`${status.trading
+						? "bg-[#A162F7] bg-opacity-300"
+						: status.notStart
 							? "bg-[#FF6370] bg-opacity-300"
 							: "bg-[#A4A5A6] bg-opacity-300"
 					}`,
@@ -77,8 +76,8 @@ const ListCard = ({ cardInfo, menu, index }: IProps) => {
 				{status.trading
 					? "Trading"
 					: status.notStart
-					? "Not Start"
-					: "Finished"}
+						? "Not Start"
+						: "Finished"}
 			</div>
 		);
 	};
@@ -87,10 +86,9 @@ const ListCard = ({ cardInfo, menu, index }: IProps) => {
 		return (
 			<div
 				className={cn(
-					`${
-						status === 1
-							? "bg-[#A162F7] bg-opacity-300"
-							: status === 2
+					`${status === 1
+						? "bg-[#A162F7] bg-opacity-300"
+						: status === 2
 							? "bg-[#FF6370] bg-opacity-300"
 							: "bg-[#A4A5A6] bg-opacity-300"
 					}`,
@@ -110,9 +108,8 @@ const ListCard = ({ cardInfo, menu, index }: IProps) => {
 			transition={{ type: "spring", stiffness: 400, damping: 10 }}
 		>
 			<Link
-				href={`/website/${menu}/trading-detail/${
-					cardInfo.tradeID ?? cardInfo.TradeID
-				}`}
+				href={`/website/${menu}/trading-detail/${cardInfo.tradeID ?? cardInfo.TradeID
+					}`}
 				className="cursor-pointer hover:scale-105"
 			>
 				<Card className="bg-[#242731]">
@@ -147,9 +144,9 @@ const ListCard = ({ cardInfo, menu, index }: IProps) => {
 											{item.title}:
 										</p>
 										{item.key === "startTime" ||
-										item.key === "endTime" ||
-										item.key === "CreateTime" ||
-										item.key === "UpdateTime"
+											item.key === "endTime" ||
+											item.key === "CreateTime" ||
+											item.key === "UpdateTime"
 											? calcTime(cardInfo[item.key as keyof typeof cardInfo])
 											: cardInfo[item.key as keyof typeof cardInfo]}
 									</div>

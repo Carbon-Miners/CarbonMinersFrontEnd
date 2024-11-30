@@ -65,6 +65,7 @@ const CompanyDetail = ({ params: { id = "" } }) => {
 						description: "Issue Success！",
 					});
 					setIsLoading(false);
+					router.push("/manage");
 				}
 			},
 			onError: (error) => {
